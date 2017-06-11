@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 use wapmorgan\ServerAvailabilityMonitor\AddCommand;
+use wapmorgan\ServerAvailabilityMonitor\EditCommand;
+use wapmorgan\ServerAvailabilityMonitor\DeleteCommand;
 use wapmorgan\ServerAvailabilityMonitor\ManageCommand;
 use wapmorgan\ServerAvailabilityMonitor\MonitorCommand;
 use Symfony\Component\Console\Application;
@@ -25,7 +27,9 @@ if (!init_composer($paths)) die('Run `composer install` firstly.'.PHP_EOL);
 
 $application = new Application();
 $application->add(new AddCommand());
+$application->add(new EditCommand());
+$application->add(new DeleteCommand());
 $application->add(new ManageCommand());
 $application->add(new MonitorCommand());
-$application->setDefaultCommand('monitor');
+// $application->setDefaultCommand('monitor');
 $application->run();

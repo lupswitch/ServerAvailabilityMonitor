@@ -13,7 +13,7 @@ class ManageCommand extends Command {
 	protected function configure() {
 		$this
 		// the name of the command (the part after "bin/console")
-		->setName('manage:list')
+		->setName('manage')
 
 		// the short description shown while running "php bin/console list"
 		->setDescription('Manages the list of servers.')
@@ -31,14 +31,14 @@ class ManageCommand extends Command {
 		$servers_list = new ServersList($config_file);
 
 		$table = new Table($output);
-        $table
-            ->setHeaders(['Name', 'Type', 'Ip', 'Port']);
-        $rows = [];
-        foreach ($servers_list->getServerNames() as $server_name) {
-        	$server_config = $servers_list[$server_name];
-        	$rows[] = [$server_name, $server_config['type'], $server_config['ip'], $server_config['port']];
-        }
-        $table->setRows($rows);
-        $table->render();
+		$table
+			->setHeaders(['Name', 'Type', 'Ip', 'Port']);
+		$rows = [];
+		foreach ($servers_list->getServerNames() as $server_name) {
+			$server_config = $servers_list[$server_name];
+			$rows[] = [$server_name, $server_config['type'], $server_config['ip'], $server_config['port']];
+		}
+		$table->setRows($rows);
+		$table->render();
 	}
 }
