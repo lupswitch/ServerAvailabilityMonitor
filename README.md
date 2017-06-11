@@ -3,11 +3,11 @@ SAM is intented to monitor all of your services to be sure they are working. It'
 
 # What server types does it support?
 
-1. Http
-2. MySQL
-3. PostgreSql
-4. Memcache
-5. Redis
+1. [Http](#http)
+2. [MySQL](#mysql)
+3. [PostgreSql](#postgresql)
+4. [Memcache](#memcache)
+5. [Redis](#redis)
 
 # Typical workflow
 
@@ -87,3 +87,22 @@ compaster.pro reported error: Http server reports 301 code when expecting 302
   ```sh
   bin/monitor manage
   ```
+
+# Server check details
+
+**For all servers hostname/ip and port is required parameters.**
+
+## Http
+For http server it can check result code of result. Typically it should be 200 (for most cases) or 302 / 301 (for redirecting pages).
+
+## MySQL
+For mysql server you should provide username/password for any user of DB. It will try to connect to DB.
+
+## PostgreSQL
+For pgsql server you should provide username/password for any user of DB. It will try to connect to DB.
+
+## Memcache
+For memcache server there are not additional parameters.
+
+## Redis
+For redis server there are not additional parameters.
