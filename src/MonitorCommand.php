@@ -21,20 +21,30 @@ class MonitorCommand extends Command {
         ->setHelp('This command allows you to monitor all configured servers.')
 
         ->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The location of config-file', ServersList::getDefaultConfigLocation())
-        ->addOption('checkPeriod', null, InputOption::VALUE_REQUIRED, 'The period of checks', 10)
+        ->addOption('checkPeriod', null, InputOption::VALUE_REQUIRED, 'The period of checks', null)
     ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
         $config_file = $input->getOption('config') ?: ServersList::getDefaultConfigLocation();
         $servers_list = new ServersList($config_file);
+        $configuration = new Configuration($config_file);
+        if ($configuration['email'] !== false)
+            $reporter = new Reporter($configuration);
 
-        $check_period = $input->getOption('checkPeriod');
+        $check_period = $input->getOption('checkPeriod') ?: $configuration['checkPeriod'];
         $servers_list->initializeServers();
 
+        $server_names = $servers_list->getServerNames();
+        if (empty($server_names)) {
+            $output->writeln('<info>Firstly, add servers via manage:add command.</info>');
+            return true;
+        }
+
         while (true) {
+            $check_time = time();
             $errors = [];
-            foreach ($servers_list->getServerNames() as $server_name) {
+            foreach ($server_names as $server_name) {
                 if ($output->isDebug())
                     $output->writeln('Checking '.$server_name);
                 $server = $servers_list->getServer($server_name);
@@ -51,16 +61,20 @@ class MonitorCommand extends Command {
             }
             if (empty($errors)) {
                 if ($output->isVerbose())
-                    $output->writeln('<info>Check at '.date('r').': all servers successfull</info>');
+                    $output->writeln('<info>Check at '.date('r', $check_time).': all servers successfull</info>');
             }
             else {
-                $output->writeln('<info>Check at '.date('r').': '.count($errors).' error'.(count($errors) > 1 ? 's' : null).'</info>');
+                $output->writeln('<info>Check at '.date('r', $check_time).': '.count($errors).' error'.(count($errors) > 1 ? 's' : null).'</info>');
+                $report = [];
                 foreach ($errors as $server_name => $error) {
                     if ($output->isVerbose())
                         $output->writeln('<error>'.$server_name.' reported error: '.$error->getMessage().'</error>');
                     else
                         $output->writeln('<error>'.$server_name.' reported error</error>');
+                    $report[$server_name] = $error->getMessage();
                 }
+                if ($configuration['email'] !== false)
+                    $reporter->sendReport($report, $check_time);
             }
             sleep($check_period);
         }

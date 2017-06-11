@@ -5,7 +5,6 @@ abstract class BaseServer {
 	const DEFAULT_PORT = '80';
 	public $hostname;
 	public $port;
-	public $checkPeriod;
 
 	public function getRules() {
 		return [

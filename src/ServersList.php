@@ -17,14 +17,22 @@ class ServersList implements ArrayAccess {
 	protected $servers;
 
 	public function __construct($config) {
-		if (file_exists($config))
-			$this->serversConfig = json_decode(file_get_contents($config), true);
+		if (file_exists($config)) {
+			$all_config = json_decode(file_get_contents($config), true);
+			$this->serversConfig = isset($all_config['servers']) ? $all_config['servers'] : [];
+		}
 		else
 			$this->serversConfig = [];
 	}
 
 	public function save($config) {
-		return file_put_contents($config, json_encode($this->serversConfig)) !== false;
+		if (file_exists($config)) {
+			$all_config = json_decode(file_get_contents($config), true);
+			$all_config['servers'] = $this->serversConfig;
+		} else {
+			$all_config = ['servers' => $this->serversConfig];
+		}
+		return file_put_contents($config, json_encode($all_config)) !== false;
 	}
 
 	public function initializeServers() {
