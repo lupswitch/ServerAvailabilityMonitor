@@ -99,7 +99,7 @@ class ServersList implements ArrayAccess {
 				return realpath(__DIR__.'/..').'\\.monitor.json';
 		} else {
 			if (isset($_SERVER['HOME']))
-				return $_SERVER['HOME'].'\\.monitor.json';
+				return $_SERVER['HOME'].'/.monitor.json';
 			else
 				return realpath(__DIR__.'/..').'/.monitor.json';
 		}
