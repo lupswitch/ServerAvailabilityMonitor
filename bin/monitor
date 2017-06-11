@@ -5,6 +5,7 @@ use wapmorgan\ServerAvailabilityMonitor\EditCommand;
 use wapmorgan\ServerAvailabilityMonitor\DeleteCommand;
 use wapmorgan\ServerAvailabilityMonitor\ManageCommand;
 use wapmorgan\ServerAvailabilityMonitor\MonitorCommand;
+use wapmorgan\ServerAvailabilityMonitor\RenameCommand;
 use Symfony\Component\Console\Application;
 
 $paths = [
@@ -31,5 +32,6 @@ $application->add(new EditCommand());
 $application->add(new DeleteCommand());
 $application->add(new ManageCommand());
 $application->add(new MonitorCommand());
+$application->add(new RenameCommand());
 // $application->setDefaultCommand('monitor');
 $application->run();

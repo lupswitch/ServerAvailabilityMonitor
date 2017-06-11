@@ -21,6 +21,7 @@ class MonitorCommand extends Command {
         ->setHelp('This command allows you to monitor all configured servers.')
 
         ->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The location of config-file', ServersList::getDefaultConfigLocation())
+        ->addOption('checkPeriod', null, InputOption::VALUE_REQUIRED, 'The period of checks', 10)
     ;
     }
 
@@ -28,7 +29,7 @@ class MonitorCommand extends Command {
         $config_file = $input->getOption('config') ?: ServersList::getDefaultConfigLocation();
         $servers_list = new ServersList($config_file);
 
-        $check_period = 10;
+        $check_period = $input->getOption('checkPeriod');
         $servers_list->initializeServers();
 
         while (true) {
@@ -39,10 +40,13 @@ class MonitorCommand extends Command {
                 $server = $servers_list->getServer($server_name);
 
                 $result = $server->checkAvailability();
-                if ($result !== true) {
+                if ($result === true) {
+                    if ($output->isDebug())
+                        $output->writeln('<comment>Server '.$server_name.' is ok</comment>');
+                } else {
                     $errors[$server_name] = $result;
                     if ($output->isVeryVerbose())
-                        $output->writeln('<error>Server check failed</error>');
+                        $output->writeln('<error>Server '.$server_name.' ['.$server->hostname.':'.$server->port.'] check failed</error>');
                 }
             }
             if (empty($errors)) {
@@ -52,7 +56,10 @@ class MonitorCommand extends Command {
             else {
                 $output->writeln('<info>Check at '.date('r').': '.count($errors).' error'.(count($errors) > 1 ? 's' : null).'</info>');
                 foreach ($errors as $server_name => $error) {
-                    $output->writeln('<error>'.$server_name.' reported error: '.$error->getMessage().'</error>');
+                    if ($output->isVerbose())
+                        $output->writeln('<error>'.$server_name.' reported error: '.$error->getMessage().'</error>');
+                    else
+                        $output->writeln('<error>'.$server_name.' reported error</error>');
                 }
             }
             sleep($check_period);

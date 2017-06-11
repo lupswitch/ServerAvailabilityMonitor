@@ -32,11 +32,11 @@ class ManageCommand extends Command {
 
 		$table = new Table($output);
 		$table
-			->setHeaders(['Name', 'Type', 'Ip', 'Port']);
+			->setHeaders(['Name', 'Type', 'Host', 'Port']);
 		$rows = [];
 		foreach ($servers_list->getServerNames() as $server_name) {
 			$server_config = $servers_list[$server_name];
-			$rows[] = [$server_name, $server_config['type'], $server_config['ip'], $server_config['port']];
+			$rows[] = [$server_name, $server_config['type'], $server_config['hostname'], $server_config['port']];
 		}
 		$table->setRows($rows);
 		$table->render();

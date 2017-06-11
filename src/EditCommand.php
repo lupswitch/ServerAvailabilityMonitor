@@ -2,6 +2,7 @@
 namespace wapmorgan\ServerAvailabilityMonitor;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,65 +25,64 @@ class EditCommand extends Command {
 
 		->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The location of config-file', ServersList::getDefaultConfigLocation())
 
-		->addArgument('name', null, InputOption::VALUE_REQUIRED, 'Name of the server', null)
+		->addArgument('name', InputArgument::OPTIONAL, 'Name of the server')
+		->addArgument('property', InputArgument::OPTIONAL, 'Property of server')
+		->addArgument('value', InputArgument::OPTIONAL, 'New value of property')
 	;
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
-		$helper = $this->getHelper('question');
-
-		$type = $input->getOption('type');
-
-		if (empty($type) || !in_array($type, ServersList::SUPPORTED_TYPES)) {
-			$question = new ChoiceQuestion(
-				'Please select your type of server (defaults to http)',
-				ServersList::SUPPORTED_TYPES,
-				0
-			);
-			$question->setErrorMessage('Server type %s is invalid.');
-			$type = $helper->ask($input, $output, $question);
-		}
-
 		$config_file = $input->getOption('config') ?: ServersList::getDefaultConfigLocation();
 		$servers_list = new ServersList($config_file);
-		$server = ServersList::getServerByType($type);
-		$server_rules = $server->getRules();
 
-		foreach ($server_rules as $server_param => $param_rules) {
-			switch ($param_rules[1]) {
-				case 'question':
-					$question = new Question($param_rules[2], $param_rules[3]);
-					if (isset($param_rules[4]) && is_callable($param_rules[4]))
-						$question->setValidator($param_rules[4]);
-					while (true) {
-						$answer = $helper->ask($input, $output, $question);
-						if (strlen($answer) > 0 || $param_rules[0] == 'optional') {
-							if (strlen($answer) > 0)
-								$server->{$server_param} = $answer;
-							break;
-						}
-					}
+		$helper = $this->getHelper('question');
+
+		$name = $input->getArgument('name');
+
+		if (empty($name) || !isset($servers_list[$name])) {
+			$question = new Question('Please provide name of server to update: ');
+			while (true) {
+				$name = $helper->ask($input, $output, $question);
+				if (!empty($name) && isset($servers_list[$name]))
 					break;
 			}
 		}
 
-		$proposed_name = $type.($servers_list->getNextTypeId($type));
+		$server_config = $servers_list[$name];
 
-		$question = new Question('Please select name of server (default to '.$proposed_name.'): ', $proposed_name);
-		$question->setValidator(function ($name) use ($servers_list) {
-			$name = trim($name);
-			if (empty($name))
-				throw new \RuntimeException('Server name can not be empty');
-			if (isset($servers_list[$name]))
-				throw new \RuntimeException('Server with that name already exists!');
-			return $name;
-		});
-		$name = $helper->ask($input, $output, $question);
+		$property = $input->getArgument('property');
+		if (empty($property) || $property == 'type' || !isset($server_config[$property])) {
+			$question = new ChoiceQuestion('Please provide property to update: ', array_diff(array_keys($server_config), array('type')));
+			while (true) {
+				$property = $helper->ask($input, $output, $question);
+				if (!empty($property) && $property != 'type' && array_key_exists($property, $server_config))
+					break;
+			}
+		}
 
-		var_dump($type);
-		$servers_list[$name] = ((array)$server) + array('type' => $type);
-		var_dump($servers_list);
+		$value = $input->getArgument('value');
+		$property_rules = (ServersList::getServerByType($server_config['type'])->getRules())[$property];
+
+
+		if (!empty($value)) {
+			try {
+				$value = $property_rules[4]($value);
+			} catch (\RuntimeException $e) {
+				$output->writeln('<error>'.$e->getMessage().'</error>');
+			}
+		}
+
+		if (empty($value)) {
+			$output->writeln('Current value: '.$server_config[$property]);
+			$question = new Question('Please provide new value: ', $property_rules[3]);
+			$question->setValidator($property_rules[4]);
+			$value = $helper->ask($input, $output, $question);
+		}
+
+		$server_config[$property] = $value;
+		$servers_list[$name] = $server_config;
+
 		if ($servers_list->save($config_file))
-			$output->writeln('<info>Successfully added to servers list</info>');
+			$output->writeln('<info>Successfully updated</info>');
 	}
 }

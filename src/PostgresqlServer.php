@@ -1,8 +1,8 @@
 <?php
 namespace wapmorgan\ServerAvailabilityMonitor;
 
-class MysqlServer extends BaseServer {
-	const DEFAULT_PORT = '3306';
+class PostgresqlServer extends BaseServer {
+	const DEFAULT_PORT = '5432';
 	public $username;
 	public $password;
 
@@ -26,26 +26,24 @@ class MysqlServer extends BaseServer {
 	public function checkAvailability() {
 		if (extension_loaded('pdo')) {
 			return $this->checkPdo();
-		} else if (extension_loaded('mysqli')) {
-			return $this->checkMysqli();
+		} else if (extension_loaded('pgsql')) {
+			return $this->checkPgsql();
 		}
 		return new \RuntimeException('No available mysql connectors found.');
 	}
 
 	protected function checkPdo() {
 		try {
-			$pdo = new \PDO('mysql:host='.$this->hostname.';port='.$this->port, $this->username, $this->password);
+			$pdo = new \PDO('pgsql:host='.$this->hostname.';port='.$this->port.';user='.$this->username.';password='.$this->password);
 		} catch (\PDOException $e) {
 			return new \RuntimeException($e->getMessage());
 		}
 		return true;
 	}
 
-	protected function checkMysqli() {
-		$mysqli = new \mysqli($this->hostname, $this->username, $this->password, null, $this->port);
-		if ($mysqli->connect_error) {
-			return new \RuntimeException($mysqli->connect_error);
-		}
+	protected function checkPgsql() {
+		$result = pg_connect('host='.$this->hostname.' port='.$this->port.' user='.$this->username.' password='.$this->password);
+		if ($result === false) return new \RuntimeException('Memcache server is not available');
 		return true;
 	}
 }

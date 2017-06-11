@@ -2,23 +2,12 @@
 namespace wapmorgan\ServerAvailabilityMonitor;
 
 class HttpServer extends BaseServer {
-	public $ip;
-	public $port;
+	const DEFAULT_PORT = '80';
+
 	public $resultCode;
 
 	public function getRules() {
-		return [
-			'ip' => array('required', 'question', 'Provide IP-address of server to monitor: ', '127.0.0.1', function ($value) {
-				if (!filter_var($value, FILTER_VALIDATE_IP))
-					throw new \RuntimeException('A valid Ip should be x.x.x.x, where x is a digit between 0 and 255');
-				return $value;
-			}),
-			'port' => array('required', 'question', 'Provide port of server: ', '80', function ($value) {
-				$value = (int)$value;
-				if ($value < 1 || $value > 65536)
-					throw new \RuntimeException('A valid port should be in range from 1 to 65536');
-				return $value;
-			}),
+		return parent::getRules() + [
 			'resultCode' => array('optional', 'question', 'If you need to be sure that server works successfully, specify the result code to check: ', null, function ($value) {
 				$value = (int)$value;
 				if ($value !== 0) {
@@ -31,8 +20,42 @@ class HttpServer extends BaseServer {
 	}
 
 	public function checkAvailability() {
-		if (rand(0, 3) > 1)
-			return new \RuntimeException('Some message');
+		if (extension_loaded('curl')) {
+			return $this->checkCurl();
+		} else {
+			return $this->checkInternal();
+		}
+	}
+
+	protected function checkCurl() {
+		$curlInit = curl_init('http://'.$this->hostname.':'.$this->port);
+		curl_setopt_array($curlInit, [
+			CURLOPT_CONNECTTIMEOUT => 10,
+			CURLOPT_NOBODY => true,
+			CURLOPT_RETURNTRANSFER => true
+		]);
+		$response = curl_exec($curlInit);
+		if ($response === false) return new \RuntimeException('Http server is not available');
+
+		if (!empty($this->resultCode)) {
+			$result_code = curl_getinfo($curlInit, CURLINFO_HTTP_CODE);
+			if ($result_code != $this->resultCode) return new \RuntimeException('Http server reports '.$result_code.' code when expecting '.$this->resultCode);
+		}
+
+		curl_close($curlInit);
+		return true;
+	}
+
+	protected function checkInternal() {
+		$headers = get_headers('http://'.$this->hostname.':'.$this->port);
+		if ($headers === false) return new \RuntimeException('Http server is not available');
+
+		if (!empty($this->resultCode)) {
+			$first_line = explode(' ', $headers[0]);
+			$result_code = (int)$first_line[1];
+			if ($result_code != $this->resultCode) return new \RuntimeException('Http server reports '.$result_code.' code when expecting '.$this->resultCode);
+		}
+
 		return true;
 	}
 }
