@@ -1,0 +1,31 @@
+#!/usr/bin/env php
+<?php
+use wapmorgan\ServerAvailabilityMonitor\AddCommand;
+use wapmorgan\ServerAvailabilityMonitor\ManageCommand;
+use wapmorgan\ServerAvailabilityMonitor\MonitorCommand;
+use Symfony\Component\Console\Application;
+
+$paths = [
+	__DIR__.'/../vendor/autoload.php',
+	__DIR__.'/../autoload.php',
+	__DIR__.'/../../../autoload.php',
+	];
+
+function init_composer(array $paths) {
+	foreach ($paths as $path) {
+		if (file_exists($path)) {
+			require_once $path;
+			return true;
+		}
+	}
+	return false;
+}
+
+if (!init_composer($paths)) die('Run `composer install` firstly.'.PHP_EOL);
+
+
+$application = new Application();
+$application->add(new AddCommand());
+$application->add(new ManageCommand());
+$application->add(new MonitorCommand());
+$application->run();
