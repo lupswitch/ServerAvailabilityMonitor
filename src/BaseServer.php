@@ -2,5 +2,5 @@
 namespace wapmorgan\ServerAvailabilityMonitor;
 
 abstract class BaseServer {
-	public $type;
+	public $checkPeriod;
 }

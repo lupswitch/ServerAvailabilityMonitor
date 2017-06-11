@@ -28,11 +28,20 @@ class ServersList implements ArrayAccess {
 	}
 
 	public function initializeServers() {
-
+		foreach ($this->serversConfig as $server_name => $server_config) {
+			$this->servers[$server_name] = static::getServerByType($server_config['type']);
+			foreach ($server_config as $config_param => $param_value) {
+				if (!$config_param != 'type') $this->servers[$server_name]->{$config_param} = $param_value;
+			}
+		}
 	}
 
 	public function getServerNames() {
 		return array_keys($this->serversConfig);
+	}
+
+	public function getServer($name) {
+		return isset($this->servers[$name]) ? $this->servers[$name] : false;
 	}
 
 	public function getNextTypeId($type) {

@@ -1,7 +1,7 @@
 <?php
 namespace wapmorgan\ServerAvailabilityMonitor;
 
-class MysqlServer {
+class MysqlServer extends BaseServer {
 	public $ip;
 	public $port;
 	public $username;
@@ -33,5 +33,11 @@ class MysqlServer {
 				return $value;
 			})
 		];
+	}
+
+	public function checkAvailability() {
+		if (rand(0, 3) > 1)
+			return new \RuntimeException('Some message');
+		return true;
 	}
 }

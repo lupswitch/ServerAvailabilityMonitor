@@ -1,7 +1,7 @@
 <?php
 namespace wapmorgan\ServerAvailabilityMonitor;
 
-class HttpServer {
+class HttpServer extends BaseServer {
 	public $ip;
 	public $port;
 	public $resultCode;
@@ -28,5 +28,11 @@ class HttpServer {
 				return $value;
 			})
 		];
+	}
+
+	public function checkAvailability() {
+		if (rand(0, 3) > 1)
+			return new \RuntimeException('Some message');
+		return true;
 	}
 }
