@@ -9,46 +9,55 @@ SAM is intented to monitor all of your services to be sure they are working. It'
 4. Memcache
 5. Redis
 
-# How to add server for monitoring?
+# Typical workflow
 
-Run
-```sh
-bin/monitor manage:add
+1. Add servers for monitoring
+  ```sh
+  bin/monitor manage:add
+  ```
+
+2. Configure check period
+  ```sh
+  bin/monitor report:config checkPeriod
+  ```
+  and email for failure reports
+  ```sh
+  bin/monitor report:config email
+  ```
+  
+3. Run monitor
+  ```sh
+  bin/monitor monitor
+  ```
+  
+If any server is down, it will print an error and send a report to configured email:
+```
+Check at Mon, 12 Jun 2017 02:29:25 +0300: 1 error
+compaster.pro reported error
 ```
 
-and follow add wizard commands.
-
-# How to update server parameter?
-
-Run
-```sh
-bin/monitor manage:edit http1
+If you want more information, launch monitor with verbosity option:
+```
+Check at Mon, 12 Jun 2017 02:29:27 +0300: 1 error
+compaster.pro reported error: Http server reports 301 code when expecting 302
 ```
 
-and follow update wizard commands. Or specify all data as arguments
-```sh
-bin/monitor manage:edit http1 resultCode 302
-```
+# Servers managing
+- Updating server configuration
+  ```sh
+  bin/monitor manage:edit http1
+  ```
+  or with one call
+  ```sh
+  bin/monitor manage:edit http1 resultCode 302
+  ```
 
-# How to delete server?
+- Deleting server from monitoring list
+  ```sh
+  bin/monitor manage:delete http1
+  ```
 
-Run
-```sh
-bin/monitor manage:delete http1
-```
-
-# How to start monitoring?
-
-Run
-```sh
-bin/monitor monitor
-```
-
-It will print any data only if servers are down or not responding.
-
-# How to see all servers that are monitored?
-
-Run
-```sh
-bin/monitor manage
-```
+- Print all servers configured for monitoring
+  ```sh
+  bin/monitor manage
+  ```
