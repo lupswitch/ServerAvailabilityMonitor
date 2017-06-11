@@ -1,23 +1,24 @@
 {
 	"name": "wapmorgan/server-availability-monitor",
 	"description": "SAM is intented to monitor all of your services to be sure that they are working. It's a command line tool that checks servers all the time.",
+	"license": "MIT",
 	"autoload": {
 		"psr-4": {
 			"wapmorgan\\ServerAvailabilityMonitor\\": "src/"
 		}
 	},
-    "require": {
-        "symfony/console": "^3.3.2",
+	"require": {
+		"symfony/console": "^3.3.2",
 		"phpmailer/phpmailer": "^5.2.23"
-    },
-    "suggest": {
-    	"ext-redis": "For Redis-server check",
-    	"ext-curl": "For Http-server check",
-    	"ext-memcache": "For Memcache-server check",
-    	"ext-memcached": "For Memcache-server check",
-    	"ext-pdo": "For Mysql/PgSql-server check",
-    	"ext-mysqli": "For MySQL-server check",
-    	"ext-pgsql": "For PostgreSql-server check"
-    },
-    "bin": ["bin/monitor"]
+	},
+	"suggest": {
+		"ext-redis": "For Redis-server check",
+		"ext-curl": "For Http-server check",
+		"ext-memcache": "For Memcache-server check",
+		"ext-memcached": "For Memcache-server check",
+		"ext-pdo": "For Mysql/PgSql-server check",
+		"ext-mysqli": "For MySQL-server check",
+		"ext-pgsql": "For PostgreSql-server check"
+	},
+	"bin": ["bin/monitor"]
 }
