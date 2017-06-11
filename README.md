@@ -37,7 +37,8 @@ compaster.pro reported error
 ```
 
 If you want more information, launch monitor with verbosity option:
-```
+```sh
+$ bin/monitor monitor -v
 Check at Mon, 12 Jun 2017 02:29:27 +0300: 1 error
 compaster.pro reported error: Http server reports 301 code when expecting 302
 ```
