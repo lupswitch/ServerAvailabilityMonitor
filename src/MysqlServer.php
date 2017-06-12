@@ -23,26 +23,29 @@ class MysqlServer extends BaseServer {
 		];
 	}
 
-	public function checkAvailability() {
+	public function checkAvailability($timeOut) {
 		if (extension_loaded('pdo')) {
-			return $this->checkPdo();
+			return $this->checkPdo($timeOut);
 		} else if (extension_loaded('mysqli')) {
-			return $this->checkMysqli();
+			return $this->checkMysqli($timeOut);
 		}
 		return new \RuntimeException('No available mysql connectors found.');
 	}
 
-	protected function checkPdo() {
+	protected function checkPdo($timeOut) {
 		try {
-			$pdo = new \PDO('mysql:host='.$this->hostname.';port='.$this->port, $this->username, $this->password);
+			$pdo = new \PDO('mysql:host='.$this->hostname.';port='.$this->port, $this->username, $this->password, [
+				\PDO::ATTR_TIMEOUT => $timeOut,
+			]);
 		} catch (\PDOException $e) {
 			return new \RuntimeException($e->getMessage());
 		}
 		return true;
 	}
 
-	protected function checkMysqli() {
+	protected function checkMysqli($timeOut) {
 		$mysqli = new \mysqli($this->hostname, $this->username, $this->password, null, $this->port);
+		$mysqli->options(MYSQLI_OPT_CONNECT_TIMEOUT, $timeOut);
 		if ($mysqli->connect_error) {
 			return new \RuntimeException($mysqli->connect_error);
 		}

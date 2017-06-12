@@ -6,6 +6,8 @@ use ArrayAccess;
 class Configuration implements ArrayAccess {
 	const DEFAULT_CHECK_PERIOD = 10;
 
+	const DEFAULT_TIME_OUT = 3;
+
 	protected $config;
 
 	public function __construct($config) {
@@ -46,6 +48,7 @@ class Configuration implements ArrayAccess {
 	static public function getDefaultConfig() {
 		return [
 			'checkPeriod' => static::DEFAULT_CHECK_PERIOD,
+			'timeOut' => static::DEFAULT_TIME_OUT,
 			'email' => false,
 		];
 	}

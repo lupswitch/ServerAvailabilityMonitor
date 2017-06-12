@@ -19,18 +19,18 @@ class HttpServer extends BaseServer {
 		];
 	}
 
-	public function checkAvailability() {
+	public function checkAvailability($timeOut) {
 		if (extension_loaded('curl')) {
-			return $this->checkCurl();
+			return $this->checkCurl($timeOut);
 		} else {
-			return $this->checkInternal();
+			return $this->checkInternal($timeOut);
 		}
 	}
 
-	protected function checkCurl() {
+	protected function checkCurl($timeOut) {
 		$curlInit = curl_init('http://'.$this->hostname.':'.$this->port);
 		curl_setopt_array($curlInit, [
-			CURLOPT_CONNECTTIMEOUT => 10,
+			CURLOPT_CONNECTTIMEOUT => $timeOut,
 			CURLOPT_NOBODY => true,
 			CURLOPT_RETURNTRANSFER => true
 		]);
@@ -46,8 +46,17 @@ class HttpServer extends BaseServer {
 		return true;
 	}
 
-	protected function checkInternal() {
+	protected function checkInternal($timeOut) {
+		$defaults = stream_context_set_default(
+			[
+				'http' => [
+					'timeout' => $timeOut,
+				]
+			]
+		);
 		$headers = get_headers('http://'.$this->hostname.':'.$this->port);
+		stream_context_set_default($defaults);
+
 		if ($headers === false) return new \RuntimeException('Http server is not available');
 
 		if (!empty($this->resultCode)) {

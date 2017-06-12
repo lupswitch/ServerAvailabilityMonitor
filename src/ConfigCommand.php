@@ -25,7 +25,10 @@ class ConfigCommand extends Command {
 
 		->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The location of config-file', ServersList::getDefaultConfigLocation())
 
-		->addArgument('param', InputArgument::REQUIRED, 'Parameter to configure. Possible values: email, checkPeriod')
+		->addArgument('param', InputArgument::REQUIRED, 'Parameter to configure. Possible values:'.PHP_EOL.'
+- email - An email to send reports when one of services fails
+- checkPeriod - Time between checks of service availability.
+- timeOut - Time out for connection to services.')
 	;
 	}
 
@@ -37,8 +40,8 @@ class ConfigCommand extends Command {
 
 		$param = $input->getArgument('param');
 
-		if (!in_array($param, ['email', 'checkPeriod'])) {
-			$output->writeln('<error>Param should one of these: email, checkPeriod</error>');
+		if (!in_array($param, ['email', 'checkPeriod', 'timeOut'])) {
+			$output->writeln('<error>Param should one of these: email, checkPeriod, timeOut</error>');
 			return false;
 		}
 
@@ -58,6 +61,16 @@ class ConfigCommand extends Command {
 					return $value;
 				});
 				$configuration['checkPeriod'] = $checkPeriod;
+				break;
+
+			case 'timeOut':
+				$timeOut = $input_macros($configuration['timeOut'], $configuration['timeOut'], function ($value) {
+					$value = (int)$value;
+					if ($value <= 0)
+						throw new \RuntimeException('Time out should be positive integer');
+					return $value;
+				});
+				$configuration['timeOut'] = $timeOut;
 				break;
 
 			case 'email':

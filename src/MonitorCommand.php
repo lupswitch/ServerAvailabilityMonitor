@@ -22,6 +22,7 @@ class MonitorCommand extends Command {
 
         ->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The location of config-file', ServersList::getDefaultConfigLocation())
         ->addOption('checkPeriod', null, InputOption::VALUE_REQUIRED, 'The period of checks', null)
+        ->addOption('timeOut', null, InputOption::VALUE_REQUIRED, 'The time out for checks', null)
     ;
     }
 
@@ -31,6 +32,7 @@ class MonitorCommand extends Command {
         $configuration = new Configuration($config_file);
 
         $check_period = $input->getOption('checkPeriod') ?: $configuration['checkPeriod'];
+        $time_out = $input->getOption('timeOut') ?: $configuration['timeOut'];
 
         $reporters = [];
         if ($configuration['email'] !== false)
@@ -56,7 +58,7 @@ class MonitorCommand extends Command {
                     $output->writeln('Checking '.$server_name);
                 $server = $servers_list->getServer($server_name);
 
-                $result = $server->checkAvailability();
+                $result = $server->checkAvailability($time_out);
                 if ($result === true) {
                     if ($output->isDebug())
                         $output->writeln('<comment>Server '.$server_name.' is ok</comment>');

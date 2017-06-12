@@ -30,27 +30,29 @@ class PostgreSqlServer extends BaseServer {
 		];
 	}
 
-	public function checkAvailability() {
+	public function checkAvailability($timeOut) {
 		if (extension_loaded('pdo')) {
-			return $this->checkPdo();
+			return $this->checkPdo($timeOut);
 		} else if (extension_loaded('pgsql')) {
-			return $this->checkPgsql();
+			return $this->checkPgsql($timeOut);
 		}
 		return new \RuntimeException('No available mysql connectors found.');
 	}
 
-	protected function checkPdo() {
+	protected function checkPdo($timeOut) {
 		try {
-			$pdo = new \PDO('pgsql:host='.$this->hostname.';port='.$this->port.';user='.$this->username.';password='.$this->password.(!empty($this->database) ? ';dbname='.$this->database : null));
+			$pdo = new \PDO('pgsql:host='.$this->hostname.';port='.$this->port.';user='.$this->username.';password='.$this->password.(!empty($this->database) ? ';dbname='.$this->database : null), null, null, [
+				\PDO::ATTR_TIMEOUT => $timeOut,
+			]);
 		} catch (\PDOException $e) {
 			return new \RuntimeException($e->getMessage());
 		}
 		return true;
 	}
 
-	protected function checkPgsql() {
-		$result = pg_connect('host='.$this->hostname.' port='.$this->port.' user='.$this->username.' password='.$this->password.(!empty($this->database) ? ' dbname='.$this->database : null));
-		if ($result === false) return new \RuntimeException('Memcache server is not available');
+	protected function checkPgsql($timeOut) {
+		$result = pg_connect('host='.$this->hostname.' port='.$this->port.' user='.$this->username.' password='.$this->password.(!empty($this->database) ? ' dbname='.$this->database : null).' connect_timeout='.$timeOut);
+		if ($result === false) return new \RuntimeException('PostgreSql server is not available');
 		return true;
 	}
 }
