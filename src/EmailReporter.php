@@ -3,7 +3,7 @@ namespace wapmorgan\ServerAvailabilityMonitor;
 
 use PHPMailer;
 
-class Reporter {
+class EmailReporter {
 	protected $configuration;
 
 	public function __construct(Configuration $configuration) {

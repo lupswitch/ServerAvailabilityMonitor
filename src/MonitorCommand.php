@@ -29,10 +29,17 @@ class MonitorCommand extends Command {
         $config_file = $input->getOption('config') ?: ServersList::getDefaultConfigLocation();
         $servers_list = new ServersList($config_file);
         $configuration = new Configuration($config_file);
-        if ($configuration['email'] !== false)
-            $reporter = new Reporter($configuration);
 
         $check_period = $input->getOption('checkPeriod') ?: $configuration['checkPeriod'];
+
+        $reporters = [];
+        if ($configuration['email'] !== false)
+            $reporters[] = new EmailReporter($configuration);
+        if (NotifyReporter::checkAvailability()) {
+            NotifyReporter::$expireTime = $check_period * 1000;
+            $reporters[] = new NotifyReporter();
+        }
+
         $servers_list->initializeServers();
 
         $server_names = $servers_list->getServerNames();
@@ -64,6 +71,7 @@ class MonitorCommand extends Command {
                     $output->writeln('<info>Check at '.date('r', $check_time).': all servers successfull</info>');
             }
             else {
+                // output errors in logs / on the terminal
                 $output->writeln('<info>Check at '.date('r', $check_time).': '.count($errors).' error'.(count($errors) > 1 ? 's' : null).'</info>');
                 $report = [];
                 foreach ($errors as $server_name => $error) {
@@ -73,8 +81,11 @@ class MonitorCommand extends Command {
                         $output->writeln('<error>'.$server_name.' reported error</error>');
                     $report[$server_name] = $error->getMessage();
                 }
-                if ($configuration['email'] !== false)
+
+                // send reports
+                foreach ($reporters as $reporter) {
                     $reporter->sendReport($report, $check_time);
+                }
             }
             sleep($check_period);
         }

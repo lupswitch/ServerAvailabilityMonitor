@@ -93,7 +93,7 @@ class ConfigCommand extends Command {
 					$output->writeln('<info>Testing sending</info>');
 				}
 				$configuration['email'] = $email;
-				$reporter = new Reporter($configuration);
+				$reporter = new EmailReporter($configuration);
 				try {
 					$reporter->sendReport(array('http_test' => 'Testing fail reason'), time(), true);
 				} catch (\RuntimeException $e) {
