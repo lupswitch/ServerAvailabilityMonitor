@@ -48,12 +48,12 @@ SAM is intented to monitor all of your services to be sure they are working. It'
   Provide To field: admin@gmail.com
   Testing sending
   ```
-  
+
 3. Run monitor
   ```sh
   $ bin/monitor monitor
   ```
-  
+
 If any server is down, it will print an error and send a report to configured email:
 ```
 $ bin/monitor monitor
@@ -99,7 +99,7 @@ For http server it can check result code of result. Typically it should be 200 (
 For mysql server you should provide username/password for any user of DB. It will try to connect to DB.
 
 ## PostgreSQL
-For pgsql server you should provide username/password for any user of DB. It will try to connect to DB.
+For pgsql server you should provide username/password for any user of DB. Also you can specify different name for a database from a username name. It will try to connect to this DB.
 
 ## Memcache
 For memcache server there are not additional parameters.

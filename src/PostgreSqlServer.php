@@ -31,9 +31,9 @@ class PostgreSqlServer extends BaseServer {
 	}
 
 	public function checkAvailability() {
-		/*if (extension_loaded('pdo')) {
+		if (extension_loaded('pdo')) {
 			return $this->checkPdo();
-		} else */if (extension_loaded('pgsql')) {
+		} else if (extension_loaded('pgsql')) {
 			return $this->checkPgsql();
 		}
 		return new \RuntimeException('No available mysql connectors found.');
