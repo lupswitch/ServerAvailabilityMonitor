@@ -11,6 +11,8 @@ class ServersList implements ArrayAccess {
 		'postgresql',
 		'memcache',
 		'redis',
+		'gearman',
+		'rabbitmq'
 	];
 
 	protected $serversConfig;
@@ -88,6 +90,10 @@ class ServersList implements ArrayAccess {
 				return new MemcacheServer();
 			case 'redis':
 				return new RedisServer();
+			case 'gearman':
+				return new GearmanServer();
+			case 'rabbitmq':
+				return new RabbitMQServer();
 		}
 	}
 

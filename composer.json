@@ -18,7 +18,9 @@
 		"ext-memcached": "For Memcache-server check",
 		"ext-pdo": "For Mysql/PgSql-server check",
 		"ext-mysqli": "For MySQL-server check",
-		"ext-pgsql": "For PostgreSql-server check"
+		"ext-pgsql": "For PostgreSql-server check",
+		"ext-gearman": "For Gearman-server check",
+		"php-amqplib/php-amqplib": "For RabbitMQ-server check"
 	},
 	"bin": ["bin/monitor"]
 }

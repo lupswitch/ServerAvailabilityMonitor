@@ -4,13 +4,14 @@ namespace wapmorgan\ServerAvailabilityMonitor;
 class MemcacheServer extends BaseServer {
 	const DEFAULT_PORT = '11211';
 
-	public function checkAvailability() {
+	public function checkAvailability($timeOut) {
 		if (class_exists('\Memcache')) {
 			$memcache = new \Memcache();
-			if (@$memcache->connect($this->hostname, $this->port) === false) return new \RuntimeException('Memcache server is not available');
+			if (@$memcache->connect($this->hostname, $this->port, $timeOut) === false) return new \RuntimeException('Memcache server is not available');
 			else return true;
 		} else if (class_exists('\Memcached')) {
 			$memcached = new \Memcached();
+			$memcached->setOption(Memcached::OPT_CONNECT_TIMEOUT, $timeOut * 1000);
 			$memcached->addServer($this->hostname, $this->port);
 			$version = @$memcached->getVersion();
 			if (in_array(current($version), [false, '255.255.255'])) return new \RuntimeException('Memcache server is not available');

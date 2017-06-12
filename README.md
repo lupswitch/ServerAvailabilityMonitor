@@ -8,6 +8,8 @@ SAM is intented to monitor all of your services to be sure they are working. It'
 3. [PostgreSql](#postgresql)
 4. [Memcache](#memcache)
 5. [Redis](#redis)
+6. [Gearman](#gearman)
+7. [RabbitMQ](#rabbitmq)
 
 # Typical workflow
 
@@ -120,3 +122,9 @@ For memcache server there are not additional parameters.
 
 ## Redis
 For redis server there are not additional parameters.
+
+## Gearman
+For gearman server there are not additional parameters.
+
+## RabbitMQ
+For rabbitmq server you should provide username/password for any user of service.
