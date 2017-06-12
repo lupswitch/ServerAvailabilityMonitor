@@ -69,7 +69,7 @@ class AddCommand extends Command {
 
 		$proposed_name = $type.($servers_list->getNextTypeId($type));
 
-		$question = new Question('Please select name of server (default to '.$proposed_name.'): ', $proposed_name);
+		$question = new Question('Please select name of server (defaults to '.$proposed_name.'): ', $proposed_name);
 		$question->setValidator(function ($name) use ($servers_list) {
 			$name = trim($name);
 			if (empty($name))

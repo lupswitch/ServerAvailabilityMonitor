@@ -21,14 +21,14 @@ class ConfigCommand extends Command {
 
 		// the full command description shown when running the command with
 		// the "--help" option
-		->setHelp('This command allows you to update configuration of report system.')
+		->setHelp('This command allows you to update configuration of report system. You should pass a param to configure. Possible values:'.PHP_EOL.
+'- email - An email to send reports when one of services fails
+- checkPeriod - Time between checks of service availability.
+- timeOut - Time out for connection to services.')
 
 		->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The location of config-file', ServersList::getDefaultConfigLocation())
 
-		->addArgument('param', InputArgument::REQUIRED, 'Parameter to configure. Possible values:'.PHP_EOL.'
-- email - An email to send reports when one of services fails
-- checkPeriod - Time between checks of service availability.
-- timeOut - Time out for connection to services.')
+		->addArgument('param', InputArgument::REQUIRED, 'Parameter to configure.')
 	;
 	}
 
