@@ -71,22 +71,36 @@ compaster.pro reported error: Http server reports 301 code when expecting 302
 # Servers managing
 - Updating server configuration
   ```sh
-  bin/monitor manage:edit http1
+  $ bin/monitor manage:edit http1
   ```
   or with one call
   ```sh
-  bin/monitor manage:edit http1 resultCode 302
+  $ bin/monitor manage:edit http1 resultCode 302
   ```
 
 - Deleting server from monitoring list
   ```sh
-  bin/monitor manage:delete http1
+  $ bin/monitor manage:delete http1
   ```
 
 - Print all servers configured for monitoring
   ```sh
-  bin/monitor manage
+  $ bin/monitor manage
   ```
+
+# Reporters
+
+# EmailReporter
+EmailReporter sends you an email when one of services fails.
+
+It is configurable by
+
+```sh
+$ bin/monitor report:config email
+```
+
+# NotifyReporter
+NotifyReporter reports a problem with a notification on your desktop via `notify-send` command when it's available in your system.
 
 # Server check details
 
