@@ -90,7 +90,7 @@ compaster.pro reported error: Http server reports 301 code when expecting 302
 
 # Reporters
 
-# EmailReporter
+## EmailReporter
 EmailReporter sends you an email when one of services fails.
 
 It is configurable by
@@ -99,7 +99,7 @@ It is configurable by
 $ bin/monitor report:config email
 ```
 
-# NotifyReporter
+## NotifyReporter
 NotifyReporter reports a problem with a notification on your desktop via `notify-send` command when it's available in your system.
 
 # Server check details
