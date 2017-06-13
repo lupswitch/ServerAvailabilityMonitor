@@ -1,10 +1,11 @@
 <?php
 namespace wapmorgan\ServerAvailabilityMonitor;
 
-class PostgresqlServer extends BaseServer {
+class PostgreSqlServer extends BaseServer {
 	const DEFAULT_PORT = '5432';
 	public $username;
 	public $password;
+	public $database;
 
 	public function getRules() {
 		return parent::getRules() + [
@@ -19,14 +20,20 @@ class PostgresqlServer extends BaseServer {
 				if (empty($value))
 					throw new \RuntimeException('A valid password should be a string');
 				return $value;
+			}),
+			'database' => array('optional', 'question', 'If you need to connect to a database with a name different from username, specify name of database: ', null, function ($value) {
+				$value = trim($value);
+				if (empty($value))
+					throw new \RuntimeException('A valid database should be a string');
+				return $value;
 			})
 		];
 	}
 
 	public function checkAvailability() {
-		if (extension_loaded('pdo')) {
+		/*if (extension_loaded('pdo')) {
 			return $this->checkPdo();
-		} else if (extension_loaded('pgsql')) {
+		} else */if (extension_loaded('pgsql')) {
 			return $this->checkPgsql();
 		}
 		return new \RuntimeException('No available mysql connectors found.');
@@ -34,7 +41,7 @@ class PostgresqlServer extends BaseServer {
 
 	protected function checkPdo() {
 		try {
-			$pdo = new \PDO('pgsql:host='.$this->hostname.';port='.$this->port.';user='.$this->username.';password='.$this->password);
+			$pdo = new \PDO('pgsql:host='.$this->hostname.';port='.$this->port.';user='.$this->username.';password='.$this->password.(!empty($this->database) ? ';dbname='.$this->database : null));
 		} catch (\PDOException $e) {
 			return new \RuntimeException($e->getMessage());
 		}
@@ -42,7 +49,7 @@ class PostgresqlServer extends BaseServer {
 	}
 
 	protected function checkPgsql() {
-		$result = pg_connect('host='.$this->hostname.' port='.$this->port.' user='.$this->username.' password='.$this->password);
+		$result = pg_connect('host='.$this->hostname.' port='.$this->port.' user='.$this->username.' password='.$this->password.(!empty($this->database) ? ' dbname='.$this->database : null));
 		if ($result === false) return new \RuntimeException('Memcache server is not available');
 		return true;
 	}

@@ -49,13 +49,20 @@ class EditCommand extends Command {
 		}
 
 		$server_config = $servers_list[$name];
+		$new_server = ServersList::getServerByType($server_config['type']);
+		$available_parameters = array_unique(
+			array_merge(
+				array_keys(get_object_vars($new_server)),
+				array_diff(array_keys($server_config), array('type'))
+			)
+		);
 
 		$property = $input->getArgument('property');
 		if (empty($property) || $property == 'type' || !isset($server_config[$property])) {
-			$question = new ChoiceQuestion('Please provide property to update: ', array_diff(array_keys($server_config), array('type')));
+			$question = new ChoiceQuestion('Please provide property to update: ', $available_parameters);
 			while (true) {
 				$property = $helper->ask($input, $output, $question);
-				if (!empty($property) && $property != 'type' && array_key_exists($property, $server_config))
+				if (!empty($property) && $property != 'type' && in_array($property, $available_parameters))
 					break;
 			}
 		}
@@ -73,7 +80,7 @@ class EditCommand extends Command {
 		}
 
 		if (empty($value)) {
-			$output->writeln('Current value: '.$server_config[$property]);
+			$output->writeln('Current value: '.(array_key_exists($property, $server_config) ? $server_config[$property] : $new_server->{$property}));
 			$question = new Question('Please provide new value: ', $property_rules[3]);
 			$question->setValidator($property_rules[4]);
 			$value = $helper->ask($input, $output, $question);
