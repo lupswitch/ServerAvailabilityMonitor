@@ -1,6 +1,31 @@
 # Server Availability Monitor
 SAM is intented to monitor all of your services to be sure they are working. It's a command line tool that checks servers status all the time.
 
+[![Composer package](http://xn--e1adiijbgl.xn--p1acf/badge/wapmorgan/server-availability-monitor)](https://packagist.org/packages/wapmorgan/server-availability-monitor)
+
+# Before usage
+The preferred way to install SAM is via composer:
+
+* global installation ([additional instructions](https://getcomposer.org/doc/03-cli.md#global)):
+
+  ```sh
+  composer global require wapmorgan/server-availability-monitor
+  ```
+
+* local installation:
+
+  ```sh
+  composer require wapmorgan/server-availability-monitor
+  ```
+
+Further I will use commands for SAM installed globally, but if you've installed it locally, just replace `monitor` path to `vendor/bin/monitor`.
+
+All sub-commands is described in help:
+
+```sh
+monitor list
+```
+
 # What server types does it support?
 
 1. [Http](#http)
@@ -15,7 +40,7 @@ SAM is intented to monitor all of your services to be sure they are working. It'
 
 1. Add servers for monitoring. It will ask for some additional information like type of server, hostname, port and other depending on type.
   ```sh
-  $ bin/monitor manage:add
+  $ monitor manage:add
   Please select your type of server (defaults to http)
     [0] http
     [1] mysql
@@ -33,14 +58,14 @@ SAM is intented to monitor all of your services to be sure they are working. It'
 
 2. Configure check period
   ```sh
-  $ bin/monitor report:config checkPeriod
+  $ monitor report:config checkPeriod
   Current value: 10
   Please provide new value: 7
   Successfully updated
   ```
   and email for failure reports
   ```sh
-  $ bin/monitor report:config email
+  $ monitor report:config email
   Select transport system for email:
     [0] disable
     [1] sendmail
@@ -53,19 +78,19 @@ SAM is intented to monitor all of your services to be sure they are working. It'
 
 3. Run monitor
   ```sh
-  $ bin/monitor monitor
+  $ monitor monitor
   ```
 
 If any server is down, it will print an error and send a report to configured email:
 ```
-$ bin/monitor monitor
+$ monitor monitor
 Check at Mon, 12 Jun 2017 02:29:25 +0300: 1 error
 compaster.pro reported error
 ```
 
 If you want more information, launch monitor with verbosity option:
 ```sh
-$ bin/monitor monitor -v
+$ monitor monitor -v
 Check at Mon, 12 Jun 2017 02:29:27 +0300: 1 error
 compaster.pro reported error: Http server reports 301 code when expecting 302
 ```
@@ -73,21 +98,21 @@ compaster.pro reported error: Http server reports 301 code when expecting 302
 # Servers managing
 - Updating server configuration
   ```sh
-  $ bin/monitor manage:edit http1
+  $ monitor manage:edit http1
   ```
   or with one call
   ```sh
-  $ bin/monitor manage:edit http1 resultCode 302
+  $ monitor manage:edit http1 resultCode 302
   ```
 
 - Deleting server from monitoring list
   ```sh
-  $ bin/monitor manage:delete http1
+  $ monitor manage:delete http1
   ```
 
 - Print all servers configured for monitoring
   ```sh
-  $ bin/monitor manage
+  $ monitor manage
   ```
 
 # Reporters
@@ -98,7 +123,7 @@ EmailReporter sends you an email when one of services fails.
 It is configurable by
 
 ```sh
-$ bin/monitor report:config email
+$ monitor report:config email
 ```
 
 ## NotifyReporter
