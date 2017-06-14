@@ -23,8 +23,9 @@ class ConfigCommand extends Command {
 		// the "--help" option
 		->setHelp('This command allows you to update configuration of report system. You should pass a param to configure. Possible values:'.PHP_EOL.
 '- email - An email to send reports when one of services fails
+- emailPeriod - Time until sending new email when services are still not working.
 - checkPeriod - Time between checks of service availability.
-- timeOut - Time out for connection to services.')
+- checkTimeOut - Time out for connection to services.')
 
 		->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The location of config-file', ServersList::getDefaultConfigLocation())
 
@@ -40,8 +41,8 @@ class ConfigCommand extends Command {
 
 		$param = $input->getArgument('param');
 
-		if (!in_array($param, ['email', 'checkPeriod', 'timeOut'])) {
-			$output->writeln('<error>Param should one of these: email, checkPeriod, timeOut</error>');
+		if (!in_array($param, ['email', 'emailPeriod', 'checkPeriod', 'checkTimeOut'])) {
+			$output->writeln('<error>Param should one of these: email, checkPeriod, checkTimeOut</error>');
 			return false;
 		}
 
@@ -63,14 +64,24 @@ class ConfigCommand extends Command {
 				$configuration['checkPeriod'] = $checkPeriod;
 				break;
 
-			case 'timeOut':
-				$timeOut = $input_macros($configuration['timeOut'], $configuration['timeOut'], function ($value) {
+			case 'checkTimeOut':
+				$checkTimeOut = $input_macros($configuration['checkTimeOut'], $configuration['checkTimeOut'], function ($value) {
 					$value = (int)$value;
 					if ($value <= 0)
 						throw new \RuntimeException('Time out should be positive integer');
 					return $value;
 				});
-				$configuration['timeOut'] = $timeOut;
+				$configuration['checkTimeOut'] = $checkTimeOut;
+				break;
+
+			case 'emailPeriod':
+				$emailPeriod = $input_macros($configuration['emailPeriod'], $configuration['emailPeriod'], function ($value) {
+					$value = (int)$value;
+					if ($value <= 0)
+						throw new \RuntimeException('Period should be positive integer');
+					return $value;
+				});
+				$configuration['emailPeriod'] = $emailPeriod;
 				break;
 
 			case 'email':
@@ -108,7 +119,7 @@ class ConfigCommand extends Command {
 				$configuration['email'] = $email;
 				$reporter = new EmailReporter($configuration);
 				try {
-					$reporter->sendReport(array('http_test' => 'Testing fail reason'), time(), true);
+					$reporter->testConfiguration();
 				} catch (\RuntimeException $e) {
 					$output->writeln('<error>Sending failed. Reason: '.$e->getMessage().'. Check your configuration and try again.</error>');
 					return false;

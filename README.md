@@ -9,6 +9,7 @@ SAM is intented to monitor all of your services to be sure that they are working
 4. [Servers managing](#servers-managing)
 5. [Reporters](#reporters)
 6. [Server check details](#server-check-details)
+7. [Advanced settings](#advanced-settings)
 
 # Before usage
 
@@ -154,7 +155,7 @@ NotifyReporter reports a problem with a notification on your desktop via `notify
 
 # Server check details
 
-**For all servers hostname/ip and port is required parameters.**
+**For all servers hostname/ip and port are required parameters.**
 
 ## Http
 For http server it can check result code of result. Typically it should be 200 (for most cases) or 302 / 301 (for redirecting pages).
@@ -176,3 +177,14 @@ For gearman server there are not additional parameters.
 
 ## RabbitMQ
 For rabbitmq server you should provide username/password for any user of service.
+
+# Advanced settings
+
+Also, you can change following settings:
+
+- **checkTimeOut** - maximum time consumed to check one service. By default is 3 sec.
+- **emailPeriod** - minimum time until SAM send you next email report after the first one.
+
+```sh
+$ monitor report:config SETTING
+```

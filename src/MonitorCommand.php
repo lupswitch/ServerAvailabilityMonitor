@@ -22,7 +22,7 @@ class MonitorCommand extends Command {
 
         ->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The location of config-file', ServersList::getDefaultConfigLocation())
         ->addOption('checkPeriod', null, InputOption::VALUE_REQUIRED, 'The period of checks', null)
-        ->addOption('timeOut', null, InputOption::VALUE_REQUIRED, 'The time out for checks', null)
+        ->addOption('checkTimeOut', null, InputOption::VALUE_REQUIRED, 'The time out for checks', null)
     ;
     }
 
@@ -32,7 +32,7 @@ class MonitorCommand extends Command {
         $configuration = new Configuration($config_file);
 
         $check_period = $input->getOption('checkPeriod') ?: $configuration['checkPeriod'];
-        $time_out = $input->getOption('timeOut') ?: $configuration['timeOut'];
+        $time_out = $input->getOption('checkTimeOut') ?: $configuration['checkTimeOut'];
 
         $reporters = [];
         if ($configuration['email'] !== false)
