@@ -2,6 +2,8 @@
 	"name": "wapmorgan/server-availability-monitor",
 	"description": "SAM is intented to monitor all of your services to be sure that they are working. It's a command line tool that checks servers all the time.",
 	"license": "MIT",
+	"type": "console-utility",
+	"keywords": ["console", "monitoring", "utility"],
 	"autoload": {
 		"psr-4": {
 			"wapmorgan\\ServerAvailabilityMonitor\\": "src/"
