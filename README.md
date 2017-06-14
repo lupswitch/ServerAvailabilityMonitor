@@ -1,9 +1,28 @@
 # Server Availability Monitor
-SAM is intented to monitor all of your services to be sure they are working. It's a command line tool that checks servers status all the time.
+SAM is intented to monitor all of your services to be sure that they are working. It's a command line tool that checks servers all the time.
 
 [![Composer package](http://xn--e1adiijbgl.xn--p1acf/badge/wapmorgan/server-availability-monitor)](https://packagist.org/packages/wapmorgan/server-availability-monitor)
 
+1. [Before usage](#before-usage)
+2. [Supported services](#what-server-types-does-it-support)
+3. [Typical workflow](#typical-workflow)
+4. [Servers managing](#servers-managing)
+5. [Reporters](#reporters)
+6. [Server check details](#server-check-details)
+
 # Before usage
+
+## Installation a phar
+The simpliet way to install SAM is just download a phar from [releases page](https://github.com/wapmorgan/Morphos/releases/latest), make it executable and put in one of binary folders:
+
+```sh
+chmod +x sam.phar
+sudo mv sam.phar /usr/local/bin/sam
+```
+
+In this case you will should use `sam` command instead of `monitor` in all examples.
+
+## Installation via composer
 The preferred way to install SAM is via composer:
 
 * global installation ([additional instructions](https://getcomposer.org/doc/03-cli.md#global)):
@@ -18,7 +37,9 @@ The preferred way to install SAM is via composer:
   composer require wapmorgan/server-availability-monitor
   ```
 
-Further I will use commands for SAM installed globally, but if you've installed it locally, just replace `monitor` path to `vendor/bin/monitor`.
+Further I will use commands for SAM installed globally, but if you've installed it locally, just replace `monitor` command to `vendor/bin/monitor`.
+
+## Full help
 
 All sub-commands is described in help:
 
@@ -47,6 +68,8 @@ monitor list
     [2] postgresql
     [3] memcache
     [4] redis
+    [5] gearman
+    [6] rabbitmq
    > 1
   Provide IP-address or hostname of server to monitor: 127.0.0.1
   Provide port of server: 3306
