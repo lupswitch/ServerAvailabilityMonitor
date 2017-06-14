@@ -31,8 +31,9 @@
 			"name": "sam.phar",
 			"output-dir": "./",
 			"entry-point": "bin/monitor",
+			"include": ["bin"],
 			"events": {
-				"command.build.start" : "git describe --tags > bin/version.txt",
+				"command.package.start" : "git describe --tags > bin/version.txt",
 				"command.package.end": "rm bin/version.txt && chmod +x sam.phar"
 			}
 		}

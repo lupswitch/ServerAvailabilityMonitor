@@ -27,7 +27,8 @@ function init_composer(array $paths) {
 
 if (!init_composer($paths)) die('Run `composer install` firstly.'.PHP_EOL);
 
-$application = new Application('Server Availability Monitor');
+$version = file_exists(__DIR__.'/version.txt') ? trim(file_get_contents(__DIR__.'/version.txt')) : null;
+$application = new Application('Server Availability Monitor', $version);
 $application->add(new AddCommand());
 $application->add(new ConfigCommand());
 $application->add(new EditCommand());
