@@ -13,7 +13,7 @@ SAM is intented to monitor all of your services to be sure that they are working
 # Before usage
 
 ## Installation a phar
-The simpliet way to install SAM is just download a phar from [releases page](https://github.com/wapmorgan/ServerAvailabilityMonitor/releases), make it executable and put in one of binary folders:
+The simpliet way to install SAM is just download a phar from [releases page](https://github.com/wapmorgan/ServerAvailabilityMonitor/releases), make it executable and put it in one of folders listed in your $PATH:
 
 ```sh
 chmod +x sam.phar
@@ -37,7 +37,7 @@ The preferred way to install SAM is via composer:
   composer require wapmorgan/server-availability-monitor
   ```
 
-Further I will use commands for SAM installed globally, but if you've installed it locally, just replace `monitor` command to `vendor/bin/monitor`.
+Further I will use commands for SAM installed globally, but if you've installed it locally, just replace `monitor` command with `vendor/bin/monitor`.
 
 ## Full help
 
