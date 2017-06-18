@@ -88,7 +88,7 @@ monitor list
   Please provide new value: 7
   Successfully updated
   ```
-  and email for failure reports
+  email for failure reports
   ```sh
   $ monitor report:config email
   Select transport system for email:
@@ -99,6 +99,15 @@ monitor list
   Provide From field: abc@gmail.com
   Provide To field: admin@gmail.com
   Testing sending
+  ```
+  and enable logging
+  ```sh
+  $ monitor report:config log
+  Enable or disable logging of check results (disabled now):
+    [0] disable
+    [1] enable
+   > 1
+  Successfully updated
   ```
 
 3. Run monitor
@@ -155,25 +164,24 @@ $ monitor report:config email
 NotifyReporter reports a problem with a notification on your desktop via `notify-send` command when it's available in your system.
 
 # Logging
-If logging is enabled, SAM will collect all information about availability of your servers. By default, logging is disabled. You can enable it by
+SAM supports logging of check results.
 
+To configure this feature call
 ```sh
 $ monitor report:config log
 ```
 
-Now restart monitor.
-
-Logger stores information about availability every hour for every server. If any check during a hour fails, all hour will be marked as failed.
+Logger stores information about availability every hour for every server. If any check during a hour fails, the whole hour will be marked as failed.
 
 To see log you can use `log:server` command. It supports various filters and selectors.
 
 Selectors available:
 - Date log: `$ monitor log:server http1`
-  - Available filters: `--day`, `--month` and `--year`. If no passed, current values used.
+  - Available filters: `--day=`, `--month=` and `--year=`. If no passed, current values used.
 - Month log: `$ monitor log:server http1 --all-days`
-  - Available filters: `--month` and `--year`. If no passed, current values used.
+  - Available filters: `--month=` and `--year=`. If no passed, current values used.
 - Year log: `$ monitor log:server http1 --all-months`
-  - Available filters: `--year`. If no passed, current values used.
+  - Available filters: `--year=`. If no passed, current values used.
 - All time log: `$ monitor log:server http1 --all-years`
 
 Also, all selectors support `-s` option, that will shrink output and decrease width of table.
