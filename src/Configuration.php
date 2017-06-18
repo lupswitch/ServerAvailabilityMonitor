@@ -6,9 +6,23 @@ use ArrayAccess;
 class Configuration implements ArrayAccess {
 	const DEFAULT_CHECK_PERIOD = 10;
 
+	/**
+	 * @var integer Default value of period between checks
+	 * @since 0.0.6
+	 */
 	const DEFAULT_CHECK_TIME_OUT = 3;
 
+	/**
+	 * @var integer Default value of period between email'ing
+	 * @since 0.0.6
+	 */
 	const DEFAULT_EMAIL_PERIOD = 300;
+
+	/**
+	 * @var boolean Default value of logging
+	 * @since 0.0.7
+	 */
+	const DEFAULT_LOG = false;
 
 	protected $config;
 
@@ -53,6 +67,7 @@ class Configuration implements ArrayAccess {
 			'checkTimeOut' => static::DEFAULT_CHECK_TIME_OUT,
 			'emailPeriod' => static::DEFAULT_EMAIL_PERIOD,
 			'email' => false,
+			'log' => static::DEFAULT_LOG,
 		];
 	}
 
@@ -71,6 +86,10 @@ class Configuration implements ArrayAccess {
 		// 0.0.6 + emailPeriod
 		if (!isset($configuration['emailPeriod']))
 			$configuration['emailPeriod'] = static::DEFAULT_EMAIL_PERIOD;
+
+		// 0.0.7 + log
+		if (!isset($configuration['log']))
+			$configuration['log'] = static::DEFAULT_LOG;
 
 		return $configuration;
 	}
