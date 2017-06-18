@@ -41,8 +41,8 @@ class ConfigCommand extends Command {
 
 		$param = $input->getArgument('param');
 
-		if (!in_array($param, ['email', 'emailPeriod', 'checkPeriod', 'checkTimeOut'])) {
-			$output->writeln('<error>Param should one of these: email, checkPeriod, checkTimeOut</error>');
+		if (!in_array($param, ['email', 'emailPeriod', 'checkPeriod', 'checkTimeOut', 'log'])) {
+			$output->writeln('<error>Param should one of these: email, checkPeriod, checkTimeOut, log</error>');
 			return false;
 		}
 
@@ -85,7 +85,7 @@ class ConfigCommand extends Command {
 				break;
 
 			case 'email':
-				$type_question = new ChoiceQuestion('Select transport system for email: ', ['disable', 'sendmail', 'SMTP'], 'sendmail');
+				$type_question = new ChoiceQuestion('Select transport system for email ('.($configuration['email'] === false ? 'disabled' : $configuration['email']['transport']).' now): ', ['disable', 'sendmail', 'SMTP'], ($configuration['email'] === false ? 'disable' : $configuration['email']['transport']));
 				$email['transport'] = $helper->ask($input, $output, $type_question);
 				if ($email['transport'] == 'disable') {
 					$configuration['email'] = false;
@@ -124,6 +124,11 @@ class ConfigCommand extends Command {
 					$output->writeln('<error>Sending failed. Reason: '.$e->getMessage().'. Check your configuration and try again.</error>');
 					return false;
 				}
+				break;
+
+			case 'log':
+				$log_question = new ChoiceQuestion('Enable or disable logging of check results ('.($configuration['log'] ? 'enabled' : 'disabled').' now): ', ['disable', 'enable'], $configuration['log']);
+				$configuration['log'] = $helper->ask($input, $output, $log_question) == 'enable';
 				break;
 		}
 
