@@ -18,4 +18,8 @@ class GearmanServer extends BaseServer {
 			return new \RuntimeException($gearman->error);
 		return true;
 	}
+
+	public function getServerHash() {
+		return md5($this->hostname.':'.$this->port);
+	}
 }

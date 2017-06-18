@@ -55,4 +55,8 @@ class PostgreSqlServer extends BaseServer {
 		if ($result === false) return new \RuntimeException('PostgreSql server is not available');
 		return true;
 	}
+
+	public function getServerHash() {
+		return md5($this->hostname.':'.$this->port.'@'.$this->username.':'.$this->password);
+	}
 }

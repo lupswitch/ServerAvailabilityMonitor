@@ -51,4 +51,8 @@ class MysqlServer extends BaseServer {
 		}
 		return true;
 	}
+
+	public function getServerHash() {
+		return md5($this->hostname.':'.$this->port.'@'.$this->username.':'.$this->password);
+	}
 }

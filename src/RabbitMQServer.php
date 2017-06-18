@@ -43,4 +43,8 @@ class RabbitMQServer extends BaseServer {
 			return $e;
 		}
 	}
+
+	public function getServerHash() {
+		return md5($this->hostname.':'.$this->port.'@'.$this->username.':'.$this->password);
+	}
 }

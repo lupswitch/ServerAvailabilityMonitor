@@ -17,4 +17,8 @@ class RedisServer extends BaseServer {
 		}
 		return new \RuntimeException('No available redis connectors found.');
 	}
+
+	public function getServerHash() {
+		return md5($this->hostname.':'.$this->port);
+	}
 }

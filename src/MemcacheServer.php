@@ -19,4 +19,8 @@ class MemcacheServer extends BaseServer {
 		}
 		return new \RuntimeException('No available memcache connectors found.');
 	}
+
+	public function getServerHash() {
+		return md5($this->hostname.':'.$this->port);
+	}
 }
