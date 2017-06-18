@@ -8,8 +8,9 @@ SAM is intented to monitor all of your services to be sure that they are working
 3. [Typical workflow](#typical-workflow)
 4. [Servers managing](#servers-managing)
 5. [Reporters](#reporters)
-6. [Server check details](#server-check-details)
-7. [Advanced settings](#advanced-settings)
+6. [Logging](#logging)
+7. [Server configuration details](#server-configuration-details)
+8. [Advanced settings](#advanced-settings)
 
 # Before usage
 
@@ -153,7 +154,59 @@ $ monitor report:config email
 ## NotifyReporter
 NotifyReporter reports a problem with a notification on your desktop via `notify-send` command when it's available in your system.
 
-# Server check details
+# Logging
+If logging is enabled, SAM will collect all information about availability of your servers. By default, logging is disabled. You can enable it by
+
+```sh
+$ monitor report:config log
+```
+
+Now restart monitor.
+
+Logger stores information about availability every hour for every server. If any check during a hour fails, all hour will be marked as failed.
+
+To see log you can use `log:server` command. It supports various filters and selectors.
+
+Selectors available:
+- Date log: `$ monitor log:server http1`
+  - Available filters: `--day`, `--month` and `--year`. If no passed, current values used.
+- Month log: `$ monitor log:server http1 --all-days`
+  - Available filters: `--month` and `--year`. If no passed, current values used.
+- Year log: `$ monitor log:server http1 --all-months`
+  - Available filters: `--year`. If no passed, current values used.
+- All time log: `$ monitor log:server http1 --all-years`
+
+Also, all selectors support `-s` option, that will shrink output and decrease width of table.
+
+
+Simple usage:
+
+```sh
+$ monitor log:server http1
++--------------------+-----+-----+-----+-----+-----+----+---+
+| Log for 2017-06-18 | 0   | 1   | 2   | 3   | 4   | 5  | 6 |
++--------------------+-----+-----+-----+-----+-----+----+---+
+| http2              | +   | +   | +   | +   | -   | +  | - |
++--------------------+-----+-----+-----+-----+-----+----+---+
+| 5 of 7 checks passed                                      |
++--------------------+-----+-----+-----+-----+-----+----+---+
+```
+
+To decrease width of table, use `-s` (short form) option.
+```sh
+$ monitor log:server http2 -s
++----------------------+--------------------+
+| http2                | Log for 2017-06-18 |
++----------------------+--------------------+
+| 5 of 7 checks passed | ++++-+-            |
++----------------------+--------------------+
+```
+
+**Log file is a very lite-weight!** For 10 servers after 1 year of using it will grow up to ~438kb only.
+
+Recommended to enable it. For now, it's not enabled by default because of testing purposes.
+
+# Server configuration details
 
 **For all servers hostname/ip and port are required parameters.**
 
