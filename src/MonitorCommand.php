@@ -42,6 +42,10 @@ class MonitorCommand extends Command {
             $reporters[] = new NotifyReporter();
         }
 
+        if ($configuration['log']) {
+            $logger = new Logger(Logger::getDefaultLogLocation());
+        }
+
         $servers_list->initializeServers();
 
         $server_names = $servers_list->getServerNames();
@@ -53,12 +57,14 @@ class MonitorCommand extends Command {
         while (true) {
             $check_time = time();
             $errors = [];
+            $log_results = [];
             foreach ($server_names as $server_name) {
                 if ($output->isDebug())
                     $output->writeln('Checking '.$server_name);
                 $server = $servers_list->getServer($server_name);
 
                 $result = $server->checkAvailability($time_out);
+                $log_results[$server->getServerHash()] = $result === true;
                 if ($result === true) {
                     if ($output->isDebug())
                         $output->writeln('<comment>Server '.$server_name.' is ok</comment>');
@@ -68,6 +74,13 @@ class MonitorCommand extends Command {
                         $output->writeln('<error>Server '.$server_name.' ['.$server->hostname.':'.$server->port.'] check failed</error>');
                 }
             }
+
+            // write logs (if enabled)
+            if ($configuration['log']) {
+                $logger->logCheckResults($log_results, $check_time);
+            }
+
+            // show errors
             if (empty($errors)) {
                 if ($output->isVerbose())
                     $output->writeln('<info>Check at '.date('r', $check_time).': all servers successfull</info>');
@@ -84,7 +97,7 @@ class MonitorCommand extends Command {
                     $report[$server_name] = $error->getMessage();
                 }
 
-                // send reports
+                // send reports of failed services
                 foreach ($reporters as $reporter) {
                     $reporter->sendReport($report, $check_time);
                 }
