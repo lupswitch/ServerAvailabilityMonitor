@@ -21,6 +21,7 @@ class MonitorCommand extends Command {
         ->setHelp('This command allows you to monitor all configured servers.')
 
         ->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The location of config-file', ServersList::getDefaultConfigLocation())
+        ->addOption('log', 'l', InputOption::VALUE_REQUIRED, 'The location of log-file', Logger::getDefaultLogLocation())
         ->addOption('checkPeriod', null, InputOption::VALUE_REQUIRED, 'The period of checks', null)
         ->addOption('checkTimeOut', null, InputOption::VALUE_REQUIRED, 'The time out for checks', null)
     ;
@@ -43,7 +44,7 @@ class MonitorCommand extends Command {
         }
 
         if ($configuration['log']) {
-            $logger = new Logger(Logger::getDefaultLogLocation());
+            $logger = new Logger($input->getOption('log'));
         }
 
         $servers_list->initializeServers();
