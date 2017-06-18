@@ -4,6 +4,7 @@ use wapmorgan\ServerAvailabilityMonitor\AddCommand;
 use wapmorgan\ServerAvailabilityMonitor\ConfigCommand;
 use wapmorgan\ServerAvailabilityMonitor\EditCommand;
 use wapmorgan\ServerAvailabilityMonitor\DeleteCommand;
+use wapmorgan\ServerAvailabilityMonitor\ServerLogCommand;
 use wapmorgan\ServerAvailabilityMonitor\ManageCommand;
 use wapmorgan\ServerAvailabilityMonitor\MonitorCommand;
 use wapmorgan\ServerAvailabilityMonitor\RenameCommand;
@@ -32,8 +33,9 @@ $version = file_exists(__DIR__.'/version.txt') ? trim(file_get_contents(__DIR__.
 $application = new Application('Server Availability Monitor', $version);
 $application->add(new AddCommand());
 $application->add(new ConfigCommand());
-$application->add(new EditCommand());
 $application->add(new DeleteCommand());
+$application->add(new EditCommand());
+$application->add(new ServerLogCommand());
 $application->add(new ManageCommand());
 $application->add(new MonitorCommand());
 $application->add(new RenameCommand());
