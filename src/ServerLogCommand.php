@@ -27,6 +27,7 @@ class ServerLogCommand extends Command {
 		->setHelp('This command allows you to view log of check results of a server.')
 
 		->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The location of config-file', ServersList::getDefaultConfigLocation())
+		->addOption('log', 'l', InputOption::VALUE_REQUIRED, 'The location of log-file', Logger::getDefaultLogLocation())
 
 		->addOption('short', 's', InputOption::VALUE_NONE, 'Show results in short form')
 
@@ -44,14 +45,20 @@ class ServerLogCommand extends Command {
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$config_file = $input->getOption('config') ?: ServersList::getDefaultConfigLocation();
 		$servers_list = new ServersList($config_file);
-		$logger = new Logger(Logger::getDefaultLogLocation());
+		$logger = new Logger($input->getOption('log'));
 
 		$helper = $this->getHelper('question');
 
 		$name = $input->getArgument('server');
 
+		$server_names = $servers_list->getServerNames();
+		if (empty($server_names)) {
+			$output->writeln('<info>Firstly, add servers via manage:add command.</info>');
+			return true;
+		}
+
 		if (empty($name) || !isset($servers_list[$name])) {
-			$question = new ChoiceQuestion('Please provide name of server to view log: ', $servers_list->getServerNames());
+			$question = new ChoiceQuestion('Please provide name of server to view log: ', $server_names);
 			while (true) {
 				$name = $helper->ask($input, $output, $question);
 				if (!empty($name) && isset($servers_list[$name]))
