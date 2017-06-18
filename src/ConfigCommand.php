@@ -25,7 +25,8 @@ class ConfigCommand extends Command {
 '- email - An email to send reports when one of services fails
 - emailPeriod - Time until sending new email when services are still not working.
 - checkPeriod - Time between checks of service availability.
-- checkTimeOut - Time out for connection to services.')
+- checkTimeOut - Time out for connection to services.
+- log - Option to enable or disable logging.')
 
 		->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The location of config-file', ServersList::getDefaultConfigLocation())
 
