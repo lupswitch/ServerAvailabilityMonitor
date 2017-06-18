@@ -164,12 +164,12 @@ class Logger {
 	 * @return void
 	 */
 	protected function setHourStatus(&$results, $hour, $result) {
-		echo 'setHourStatus: results is ['.$results.'], hour - '.$hour.', result - '.(int)$result.', trace - '.print_r(debug_backtrace(0, 2), true).PHP_EOL;
+		// echo 'setHourStatus: results is ['.$results.'], hour - '.$hour.', result - '.(int)$result.', trace - '.print_r(debug_backtrace(0, 2), true).PHP_EOL;
 		// failed result
 		if (!$result) {
 			$results |= 1 << (23 - $hour);
 		}
-		echo 'results after set - '.print_r($results, true).PHP_EOL;
+		// echo 'results after set - '.print_r($results, true).PHP_EOL;
 		// not need to set success status
 		/* else {
 			// only if bit is already set
