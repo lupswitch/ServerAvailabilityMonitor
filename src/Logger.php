@@ -150,7 +150,7 @@ class Logger {
 			}
 		}
 
-		var_dump($this->logServers);
+		// var_dump($this->logServers);
 		// exit;
 
 		// write log
@@ -193,7 +193,7 @@ class Logger {
 	protected function writeLog() {
 		// if log data hasn't changed, don't rewrite log
 		if (!$this->isLogDataChanged) {
-			var_dump('doesn\'t changed');
+			// var_dump('doesn\'t changed');
 			return true;
 		}
 
@@ -210,6 +210,50 @@ class Logger {
 			$this->log->writeString($server_log_data['raw']);
 		}
 		unset($this->log);
+	}
+
+	public function extractServerLog($serverHash, $year = null, $month = null, $day = null) {
+		if (!isset($this->logServers[$serverHash]))
+			return false;
+
+		$checks = [];
+
+		foreach (str_split($this->logServers[$serverHash]['raw'], 5) as $check_result_raw) {
+			$check_result = $this->decodeDayResult($check_result_raw);
+
+			// filters
+			if ($year !== null && $check_result['year'] != $year) continue;
+			if ($month !== null && $check_result['month'] != $month) continue;
+			if ($day !== null) {
+				if ($check_result['day'] != $day)
+					continue;
+				// if used day filter, return just one log record
+				else
+					return $check_result;
+			}
+
+			$checks[$check_result['year']][$check_result['month']][$check_result['day']] = $check_result['results'];
+		}
+
+		if ($day !== null) {
+			// we didn't returned log record in foreach, so there's no data for this date
+			return false;
+		}
+		else if ($month !== null) {
+			$month = (int)$month;
+			return isset($checks[$year][$month]) ? $checks[$year][$month] : [];
+		}
+		else if ($year !== null)
+			return isset($checks[$year]) ? $checks[$year] : [	];
+		else
+			return $checks;
+	}
+
+	public function extractHoursResults($resultsRaw) {
+		$results = [];
+		for ($i = 0; $i < 24; $i++)
+			$results[$i] = !(boolean)(($resultsRaw >> (23 - $i)) & 1);
+		return $results;
 	}
 
 	/**
