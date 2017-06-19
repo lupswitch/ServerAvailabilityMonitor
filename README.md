@@ -13,6 +13,7 @@ SAM is intented to monitor all of your services to be sure that they are working
 6. [Logging](#logging)
 7. [Server configuration details](#server-configuration-details)
 8. [Advanced settings](#advanced-settings)
+9. [Monitor output](#monitor-output)
 
 # Before usage
 
@@ -270,3 +271,12 @@ Also, you can change following settings:
 ```sh
 $ monitor report:config SETTING
 ```
+
+# Monitor output
+
+You can configure what `monitor` command should output to terminal. By default, it outputs something only if one of servers is unavailable.
+
+If you want, you can make SAM output more information:
+
+- with `-v` option it will print advanced message of server unavailability or the success message.
+- with `-vv` option it will print all configuration and progress of checking.

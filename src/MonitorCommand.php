@@ -2,6 +2,7 @@
 namespace wapmorgan\ServerAvailabilityMonitor;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,7 +30,12 @@ class MonitorCommand extends Command {
 
     protected function execute(InputInterface $input, OutputInterface $output) {
         $config_file = $input->getOption('config') ?: ServersList::getDefaultConfigLocation();
+        if ($output->isVeryVerbose())
+            $output->writeln('<comment>Config file '.$config_file.'</comment>');
         $servers_list = new ServersList($config_file);
+        $servers_count = count($servers_list->getServerNames());
+        if ($output->isVeryVerbose())
+            $output->writeln('<comment>Servers under monitoring: '.$servers_count.'</comment>');
         $configuration = new Configuration($config_file);
 
         $check_period = $input->getOption('checkPeriod') ?: $configuration['checkPeriod'];
@@ -38,12 +44,18 @@ class MonitorCommand extends Command {
         $reporters = [];
         if ($configuration['email'] !== false)
             $reporters[] = new EmailReporter($configuration);
+            if ($output->isVeryVerbose())
+                $output->writeln('<comment>Report email is set to '.$configuration['email']['to'].'</comment>');
         if (NotifyReporter::checkAvailability()) {
+            if ($output->isVeryVerbose())
+                $output->writeln('<comment>Using desktop notifications</comment>');
             NotifyReporter::$expireTime = $check_period * 1000;
             $reporters[] = new NotifyReporter();
         }
 
         if ($configuration['log']) {
+            if ($output->isVeryVerbose())
+                $output->writeln('<comment>Enabled logging</comment>');
             $logger = new Logger($input->getOption('log'));
         }
 
@@ -55,26 +67,30 @@ class MonitorCommand extends Command {
             return true;
         }
 
+        if ($output->isVeryVerbose())
+            $progress = new ProgressBar($output, $servers_count);
+
         while (true) {
+            if ($output->isVeryVerbose())
+                $progress->start();
             $check_time = time();
             $errors = [];
             $log_results = [];
             foreach ($server_names as $server_name) {
-                if ($output->isDebug())
-                    $output->writeln('Checking '.$server_name);
+                if ($output->isVeryVerbose())
+                    $progress->advance();
                 $server = $servers_list->getServer($server_name);
 
                 $result = $server->checkAvailability($time_out);
                 $log_results[$server->getServerHash()] = $result === true;
-                if ($result === true) {
-                    if ($output->isDebug())
-                        $output->writeln('<comment>Server '.$server_name.' is ok</comment>');
-                } else {
+
+                // check result handling
+                if ($result !== true) {
                     $errors[$server_name] = $result;
-                    if ($output->isVeryVerbose())
-                        $output->writeln('<error>Server '.$server_name.' ['.$server->hostname.':'.$server->port.'] check failed</error>');
                 }
             }
+            if ($output->isVeryVerbose())
+                $progress->finish();
 
             // write logs (if enabled)
             if ($configuration['log']) {
@@ -92,9 +108,9 @@ class MonitorCommand extends Command {
                 $report = [];
                 foreach ($errors as $server_name => $error) {
                     if ($output->isVerbose())
-                        $output->writeln('<error>'.$server_name.' reported error: '.$error->getMessage().'</error>');
+                        $output->writeln('  <error>'.$server_name.' reported error: '.$error->getMessage().'</error>');
                     else
-                        $output->writeln('<error>'.$server_name.' reported error</error>');
+                        $output->writeln('  <error>'.$server_name.' reported error</error>');
                     $report[$server_name] = $error->getMessage();
                 }
 
