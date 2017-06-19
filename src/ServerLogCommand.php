@@ -17,7 +17,7 @@ class ServerLogCommand extends Command {
 	protected function configure() {
 		$this
 		// the name of the command (the part after "bin/console")
-		->setName('log:server')
+		->setName('log')
 
 		// the short description shown while running "php bin/console list"
 		->setDescription('Log viewer of specific server.')
@@ -74,7 +74,7 @@ class ServerLogCommand extends Command {
 		$day = $input->getOption('day');
 
 		// show summary for all years
-		if ($input->getOption('all-years')) {
+		if ($input->getOption('all-years') || !$input->getOption('short')) {
 			$all_checks = array_map(function($year_checks) {
 				foreach ($year_checks as $month_checks) {
 					foreach ($month_checks as $day_check) {
@@ -83,33 +83,33 @@ class ServerLogCommand extends Command {
 					}
 				}
 				return true;
-			}, $logger->extractServerLog($server->getServerHash()));
+			}, $logger->extractServerLog($server->getServerHash()) ?: []);
 			$table = new Table($output);
 			$this->renderLogTable($input->getOption('short'), $table, 'All log', $name, $all_checks);
 		}
 
 		// show summary for all months
-		else if ($input->getOption('all-months')) {
+		if ($input->getOption('all-months') || !$input->getOption('short')) {
 			$year_checks = array_map(function($month_checks) {
 				foreach ($month_checks as $day_check) {
 					if ($day_check !== 0)
 						return false;
 				}
 				return true;
-			}, $logger->extractServerLog($server->getServerHash(), $year));
+			}, $logger->extractServerLog($server->getServerHash(), $year) ?: []);
 			$table = new Table($output);
 			$this->renderLogTable($input->getOption('short'), $table, 'Log for '.$year, $name, $year_checks);
 		}
 
 		// show summary for all days
-		else if ($input->getOption('all-days')) {
-			$month_checks = array_map(function($day_check) { return $day_check === 0; }, $logger->extractServerLog($server->getServerHash(), $year, $month));
+		if ($input->getOption('all-days') || !$input->getOption('short')) {
+			$month_checks = array_map(function($day_check) { return $day_check === 0; }, $logger->extractServerLog($server->getServerHash(), $year, $month) ?: []);
 			$table = new Table($output);
 			$this->renderLogTable($input->getOption('short'), $table, 'Log for '.$year.'-'.$month, $name, $month_checks);
 		}
 
-		// show report for specific date
-		else {
+		if (!$input->getOption('short') || (!$input->getOption('all-days') && !$input->getOption('all-months') && !$input->getOption('all-years'))) {
+			// show report for specific date
 			$day_check = $logger->extractServerLog($server->getServerHash(), $year, $month, $day);
 			if ($day_check === false)
 				$check_results = [];
