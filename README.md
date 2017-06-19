@@ -171,7 +171,7 @@ To configure this feature call
 $ monitor report:config log
 ```
 
-Logger stores information about availability every hour for every server. If any check during a hour fails, the whole hour will be marked as failed. Log file is a very lite-weight! It needs only 5 bytes to store information about check results of 1 server per day.
+Logger stores information about availability every hour for every server. If any check during a hour fails, the whole hour will be marked as failed. Log file is very lite-weight! It needs only 5 bytes to store information about check results of 1 server per day.
 
 To see log you can use `log` command. It supports full and short form.
 
