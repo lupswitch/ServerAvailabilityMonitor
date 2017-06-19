@@ -173,7 +173,7 @@ $ monitor report:config log
 
 Logger stores information about availability every hour for every server. If any check during a hour fails, the whole hour will be marked as failed.
 
-To see log you can use `log` command. It supports various full and short form.
+To see log you can use `log` command. It supports full and short form.
 
 **Full log form**
 
