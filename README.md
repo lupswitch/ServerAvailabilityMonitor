@@ -173,41 +173,64 @@ $ monitor report:config log
 
 Logger stores information about availability every hour for every server. If any check during a hour fails, the whole hour will be marked as failed.
 
-To see log you can use `log:server` command. It supports various filters and selectors.
+To see log you can use `log` command. It supports various full and short form.
 
-Selectors available:
-- Date log: `$ monitor log:server http1`
-  - Available filters: `--day=`, `--month=` and `--year=`. If no passed, current values used.
-- Month log: `$ monitor log:server http1 --all-days`
-  - Available filters: `--month=` and `--year=`. If no passed, current values used.
-- Year log: `$ monitor log:server http1 --all-months`
-  - Available filters: `--year=`. If no passed, current values used.
-- All time log: `$ monitor log:server http1 --all-years`
+**Full log form**
 
-Also, all selectors support `-s` option, that will shrink output and decrease width of table.
+In full form it shows checks result for given day, month, year and all time summary. By default it shows log for current date. You can change it with `--day=`, `--month=` and `--year=` options.
 
-
-Simple usage:
 
 ```sh
-$ monitor log:server http1
-+--------------------+-----+-----+-----+-----+-----+----+---+
-| Log for 2017-06-18 | 0   | 1   | 2   | 3   | 4   | 5  | 6 |
-+--------------------+-----+-----+-----+-----+-----+----+---+
-| http1              | +   | +   | +   | +   | -   | +  | - |
-+--------------------+-----+-----+-----+-----+-----+----+---+
-| 5 of 7 checks passed                                      |
-+--------------------+-----+-----+-----+-----+-----+----+---+
+$ monitor log docker-cms
++------------+----------+
+| All log    | 2017     |
++------------+----------+
+| docker-cms | +        |
++------------+----------+
+| All checks passed     |
++------------+----------+
++--------------+----------+
+| Log for 2017 | 6        |
++--------------+----------+
+| docker-cms   | +        |
++--------------+----------+
+| All checks passed       |
++--------------+----------+
++-----------------+----------+
+| Log for 2017-06 | 19       |
++-----------------+----------+
+| docker-cms      | +        |
++-----------------+----------+
+| All checks passed          |
++-----------------+----------+
++--------------------+----+----+----+----+----+----+----+---+---+---+----+
+| Log for 2017-06-19 | 0  | 1  | 2  | 3  | 4  | 5  | 6  | 7 | 8 | 9 | 10 |
++--------------------+----+----+----+----+----+----+----+---+---+---+----+
+| docker-cms         | +  | +  | +  | +  | +  | +  | +  | + | + | + | +  |
++--------------------+----+----+----+----+----+----+----+---+---+---+----+
+| All checks passed                                                      |
++--------------------+----+----+----+----+----+----+----+---+---+---+----+
 ```
 
-To decrease width of table, use `-s` (short form) option.
+**Short log form**
+
+In short form (additional `-s` o `--short` option) you can select what information you want to see:
+
+- no options for day log
+- `--all-days` option for month log
+- `--all-months` option for year log
+- `--all-years` option for all time log
+
+By default it shows log for current date. You can change it with `--day=`, `--month=` and `--year=` options.
+
+
 ```sh
-$ monitor log:server http1 -s
-+----------------------+--------------------+
-| http1                | Log for 2017-06-18 |
-+----------------------+--------------------+
-| 5 of 7 checks passed | ++++-+-            |
-+----------------------+--------------------+
+$ monitor log -s docker-cms
++-------------------+--------------------+
+| docker-cms        | Log for 2017-06-19 |
++-------------------+--------------------+
+| All checks passed | +++++++++++        |
++-------------------+--------------------+
 ```
 
 **Log file is a very lite-weight!** For 10 servers after 1 year of using it will grow up to ~438kb only.
