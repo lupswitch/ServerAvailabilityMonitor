@@ -171,13 +171,13 @@ To configure this feature call
 $ monitor report:config log
 ```
 
-Logger stores information about availability every hour for every server. If any check during a hour fails, the whole hour will be marked as failed.
+Logger stores information about availability every hour for every server. If any check during a hour fails, the whole hour will be marked as failed. Log file is a very lite-weight! It needs only 5 bytes to store information about check results of 1 server per day.
 
 To see log you can use `log` command. It supports full and short form.
 
 **Full log form**
 
-In full form it shows checks result for given day, month, year and all time summary. By default it shows log for current date. You can change it with `--day=`, `--month=` and `--year=` options.
+In full form it shows check results for given day, month, year and all time summary. By default it shows log for current date. You can change it with `--day=`, `--month=` and `--year=` options.
 
 
 ```sh
@@ -214,7 +214,7 @@ $ monitor log docker-cms
 
 **Short log form**
 
-In short form (additional `-s` o `--short` option) you can select what information you want to see:
+In short form (additional `-s` or `--short` option) you can select what information you want to see:
 
 - no options for day log
 - `--all-days` option for month log
@@ -232,10 +232,6 @@ $ monitor log -s docker-cms
 | All checks passed | +++++++++++        |
 +-------------------+--------------------+
 ```
-
-**Log file is a very lite-weight!** For 10 servers after 1 year of using it will grow up to ~438kb only.
-
-Recommended to enable it. For now, it's not enabled by default because of testing purposes.
 
 # Server configuration details
 
