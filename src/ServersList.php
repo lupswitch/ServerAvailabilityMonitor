@@ -104,7 +104,9 @@ class ServersList implements ArrayAccess {
 			else
 				return realpath(__DIR__.'/..').'\\.monitor.json';
 		} else {
-			if (isset($_SERVER['HOME']))
+			if (function_exists('posix_geteuid') && posix_geteuid() === 0)
+				return '/etc/monitor.json';
+			else if (isset($_SERVER['HOME']))
 				return $_SERVER['HOME'].'/.monitor.json';
 			else
 				return realpath(__DIR__.'/..').'/.monitor.json';

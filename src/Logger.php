@@ -266,7 +266,9 @@ class Logger {
 			else
 				return realpath(__DIR__.'/..').'\\.monitor.blog';
 		} else {
-			if (isset($_SERVER['HOME']))
+			if (function_exists('posix_geteuid') && posix_geteuid() === 0)
+				return '/var/log/monitor.blog';
+			else if (isset($_SERVER['HOME']))
 				return $_SERVER['HOME'].'/.monitor.blog';
 			else
 				return realpath(__DIR__.'/..').'/.monitor.blog';
