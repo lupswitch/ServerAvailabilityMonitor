@@ -38,7 +38,7 @@ class MysqlServer extends BaseServer {
 				\PDO::ATTR_TIMEOUT => $timeOut,
 			]);
 		} catch (\PDOException $e) {
-			return new \RuntimeException($e->getMessage());
+			return new \RuntimeException($e->getMessage(), $e->getCode(), $e);
 		}
 		return true;
 	}
@@ -47,7 +47,7 @@ class MysqlServer extends BaseServer {
 		$mysqli = new \mysqli($this->hostname, $this->username, $this->password, null, $this->port);
 		$mysqli->options(MYSQLI_OPT_CONNECT_TIMEOUT, $timeOut);
 		if ($mysqli->connect_error) {
-			return new \RuntimeException($mysqli->connect_error);
+			return new \RuntimeException($mysqli->connect_error, $mysqli->connect_errno);
 		}
 		return true;
 	}

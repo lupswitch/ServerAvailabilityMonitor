@@ -36,7 +36,7 @@ class PostgreSqlServer extends BaseServer {
 		} else if (extension_loaded('pgsql')) {
 			return $this->checkPgsql($timeOut);
 		}
-		return new \RuntimeException('No available mysql connectors found.');
+		return new \RuntimeException('No available pgsql connectors found.');
 	}
 
 	protected function checkPdo($timeOut) {
@@ -45,7 +45,7 @@ class PostgreSqlServer extends BaseServer {
 				\PDO::ATTR_TIMEOUT => $timeOut,
 			]);
 		} catch (\PDOException $e) {
-			return new \RuntimeException($e->getMessage());
+			return new \RuntimeException($e->getMessage(), $e->getCode(), $e);
 		}
 		return true;
 	}

@@ -11,7 +11,7 @@ class RedisServer extends BaseServer {
 			try {
 				$redis->ping();
 			} catch (\RedisException $e) {
-				return $e;
+				return new RuntimeException($e->getMessage(), $e->getCode(), $e);
 			}
 			return true;
 		}

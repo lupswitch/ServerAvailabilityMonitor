@@ -23,6 +23,12 @@ abstract class BaseServer {
 	}
 
 	/**
+	 * @param  integer Time out of check in seconds
+	 * @return RuntimeException|boolean An exception if server is not available or true
+	 */
+	abstract public function checkAvailability($timeOut);
+
+	/**
 	 * @since 0.0.7
 	 * @return string A 32-chars server hash. Used to identify server in log file.
 	 */

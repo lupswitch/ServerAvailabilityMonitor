@@ -32,14 +32,14 @@ class HttpServer extends BaseServer {
 		curl_setopt_array($curlInit, [
 			CURLOPT_CONNECTTIMEOUT => $timeOut,
 			CURLOPT_NOBODY => true,
-			CURLOPT_RETURNTRANSFER => true
+			CURLOPT_RETURNTRANSFER => false,
 		]);
 		$response = curl_exec($curlInit);
-		if ($response === false) return new \RuntimeException('Http server is not available');
+		if ($response === false) return new \RuntimeException('Http server is not available: '.curl_error($curlInit), curl_errno($curlInit));
 
 		if (!empty($this->resultCode)) {
 			$result_code = curl_getinfo($curlInit, CURLINFO_HTTP_CODE);
-			if ($result_code != $this->resultCode) return new \RuntimeException('Http server reports '.$result_code.' code when expecting '.$this->resultCode);
+			if ($result_code != $this->resultCode) return new \RuntimeException('Http server reports '.$result_code.' code when expecting '.$this->resultCode, $result_code);
 		}
 
 		curl_close($curlInit);
@@ -62,7 +62,7 @@ class HttpServer extends BaseServer {
 		if (!empty($this->resultCode)) {
 			$first_line = explode(' ', $headers[0]);
 			$result_code = (int)$first_line[1];
-			if ($result_code != $this->resultCode) return new \RuntimeException('Http server reports '.$result_code.' code when expecting '.$this->resultCode);
+			if ($result_code != $this->resultCode) return new \RuntimeException('Http server reports '.$result_code.' code when expecting '.$this->resultCode, $result_code);
 		}
 
 		return true;

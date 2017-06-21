@@ -15,7 +15,7 @@ class GearmanServer extends BaseServer {
 		$gearman = new \GearmanClient();
 		$gearman->setTimeout($timeOut);
 		if (!$gearman->ping('test'))
-			return new \RuntimeException($gearman->error);
+			return new \RuntimeException($gearman->error, $gearman->getErrno());
 		return true;
 	}
 
