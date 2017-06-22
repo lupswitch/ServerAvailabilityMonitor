@@ -27,8 +27,6 @@ class SelfUpdateCommand extends Command {
 		// the "--help" option
 		->setHelp('This command allows you to update sam to newer version of fall back to previous one.')
 
-		->addOption('desired_version', null, InputOption::VALUE_REQUIRED, 'The version to use', null)
-
 		->addOption('rollback', 'r', InputOption::VALUE_NONE, 'Rollback to previous version')
 	;
 	}
@@ -52,18 +50,14 @@ class SelfUpdateCommand extends Command {
 				$output->writeln('<info>Rolled back to '.$old_real.' version.</info>');
 			} catch (\Exception $e) {
 				$output->writeln('<error>Well, something happened! Either an oopsie or something involving hackers.</error>');
-			    $output->writeln('<error>'.$e->getMessage().'</error>');
+				$output->writeln('<error>'.$e->getMessage().'</error>');
 			}
 		}
 
 		else {
-			$version = $input->getOption('desired_version');
-			if ($version === null) {
-
-			}
 			if (file_exists(__DIR__.'/../bin/version.txt')) {
 				$current_version = trim(file_get_contents(__DIR__.'/../bin/version.txt'));
-				$output->writeln('<comment>sam version: '.$current_version.'</comment>');
+				$output->writeln('<comment>Local version: '.$current_version.'</comment>');
 			}
 			$updater->getStrategy()->setPackageName('wapmorgan/server-availability-monitor');
 			$updater->getStrategy()->setPharName('sam.phar');
@@ -71,16 +65,26 @@ class SelfUpdateCommand extends Command {
 				$updater->getStrategy()->setCurrentLocalVersion($current_version);
 
 			try {
-			    $result = $updater->update();
-			    if ($result) {
-			    	$new = $updater->getNewVersion();
-					$old = $updater->getOldVersion();
-					$new_real = trim(file_get_contents(__DIR__.'/../bin/version.txt'));
-					$output->writeln('<info>Updated to '.$new_real.' version. To rollback to '.$old.' invoke with --rollback option.</info>');
-    			}
+				if ($updater->hasUpdate()) {
+					$new = $updater->getNewVersion();
+					$output->writeln('<comment>Version available: '.$new.'</comment>');
+					if (version_compare($new, $current_version) >= 0) {
+						$result = $updater->update();
+						if ($result) {
+							$new_real = trim(file_get_contents(__DIR__.'/../bin/version.txt'));
+							$output->writeln('<info>Updated to '.$new_real.' version. To rollback to '.$old.' invoke with --rollback option.</info>');
+						} else {
+							$output->writeln('<error>Errored</error>');
+						}
+					} else {
+						$output->writeln('<comment>No new versions available</comment>');
+					}
+				} else {
+					$output->writeln('<comment>No need to update</comment>');
+				}
 			} catch (\Exception $e) {
-			    $output->writeln('<error>Well, something happened! Either an oopsie or something involving hackers.</error>');
-			    $output->writeln('<error>'.$e->getMessage().'</error>');
+				$output->writeln('<error>Well, something happened! Either an oopsie or something involving hackers.</error>');
+				$output->writeln('<error>'.$e->getMessage().'</error>');
 			}
 		}
 	}
