@@ -8,6 +8,7 @@ use wapmorgan\ServerAvailabilityMonitor\ServerLogCommand;
 use wapmorgan\ServerAvailabilityMonitor\ManageCommand;
 use wapmorgan\ServerAvailabilityMonitor\MonitorCommand;
 use wapmorgan\ServerAvailabilityMonitor\RenameCommand;
+use wapmorgan\ServerAvailabilityMonitor\SelfUpdateCommand;
 use wapmorgan\ServerAvailabilityMonitor\TestCommand;
 use Symfony\Component\Console\Application;
 
@@ -42,6 +43,7 @@ $application->add(new ServerLogCommand());
 $application->add(new ManageCommand());
 $application->add(new MonitorCommand());
 $application->add(new RenameCommand());
+$application->add(new SelfUpdateCommand());
 $application->add(new TestCommand());
 // $application->setDefaultCommand('monitor');
 $application->run();
