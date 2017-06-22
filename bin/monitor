@@ -12,8 +12,11 @@ use wapmorgan\ServerAvailabilityMonitor\TestCommand;
 use Symfony\Component\Console\Application;
 
 $paths = [
+	// as a root package or phar
 	__DIR__.'/../vendor/autoload.php',
+	// as a dependency from bin
 	__DIR__.'/../autoload.php',
+	// as a dependency from package folder
 	__DIR__.'/../../../autoload.php',
 	];
 
