@@ -25,7 +25,7 @@ chmod +x sam.phar
 sudo mv sam.phar /usr/local/bin/sam
 ```
 
-In this case you will should use `sam` command instead of `monitor` in all examples.
+In this case you should use `sam` command instead of `monitor` in all examples.
 
 ## Installation via composer
 The preferred way to install SAM is via composer:
