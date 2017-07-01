@@ -27,13 +27,13 @@
 		"ext-gearman": "For Gearman-server check",
 		"php-amqplib/php-amqplib": "For RabbitMQ-server check"
 	},
-	"bin": ["bin/monitor"],
+	"bin": ["bin/sam"],
 	"extra": {
 		"phar-builder": {
 			"compression": "BZip2",
 			"name": "sam.phar",
 			"output-dir": "./",
-			"entry-point": "bin/monitor",
+			"entry-point": "bin/sam",
 			"include": ["bin"],
 			"events": {
 				"command.package.start" : "git describe --tags > bin/version.txt",

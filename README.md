@@ -25,8 +25,6 @@ chmod +x sam.phar
 sudo mv sam.phar /usr/local/bin/sam
 ```
 
-In this case you should use `sam` command instead of `monitor` in all examples.
-
 ## Installation via composer
 The preferred way to install SAM is via composer:
 
@@ -42,14 +40,14 @@ The preferred way to install SAM is via composer:
   composer require wapmorgan/server-availability-monitor
   ```
 
-Further I will use commands for SAM installed globally, but if you've installed it locally, just replace `monitor` command with `vendor/bin/monitor`.
+Further I will use commands for SAM installed globally, but if you've installed it locally, just replace `sam` command with `vendor/bin/sam`.
 
 ## Full help
 
 All sub-commands is described in help:
 
 ```sh
-monitor list
+sam list
 ```
 
 # What server types does it support?
@@ -66,7 +64,7 @@ monitor list
 
 1. Add servers for monitoring. It will ask for some additional information like type of server, hostname, port and other depending on type.
   ```sh
-  $ monitor manage:add
+  $ sam manage:add
   Please select your type of server (defaults to http)
     [0] http
     [1] mysql
@@ -86,14 +84,14 @@ monitor list
 
 2. Configure check period
   ```sh
-  $ monitor report:config checkPeriod
+  $ sam report:config checkPeriod
   Current value: 10
   Please provide new value: 7
   Successfully updated
   ```
   email for failure reports
   ```sh
-  $ monitor report:config email
+  $ sam report:config email
   Select transport system for email:
     [0] disable
     [1] sendmail
@@ -105,7 +103,7 @@ monitor list
   ```
   and enable logging
   ```sh
-  $ monitor report:config log
+  $ sam report:config log
   Enable or disable logging of check results (disabled now):
     [0] disable
     [1] enable
@@ -115,19 +113,19 @@ monitor list
 
 3. Run monitor
   ```sh
-  $ monitor monitor
+  $ sam monitor
   ```
 
 If any server is down, it will print an error and send a report to configured email:
 ```
-$ monitor monitor
+$ sam monitor
 Check at Mon, 12 Jun 2017 02:29:25 +0300: 1 error
 compaster.pro reported error
 ```
 
 If you want more information, launch monitor with verbosity option:
 ```sh
-$ monitor monitor -v
+$ sam monitor -v
 Check at Mon, 12 Jun 2017 02:29:27 +0300: 1 error
 compaster.pro reported error: Http server reports 301 code when expecting 302
 ```
@@ -135,21 +133,21 @@ compaster.pro reported error: Http server reports 301 code when expecting 302
 # Servers managing
 - Updating server configuration
   ```sh
-  $ monitor manage:edit http1
+  $ sam manage:edit http1
   ```
   or with one call
   ```sh
-  $ monitor manage:edit http1 resultCode 302
+  $ sam manage:edit http1 resultCode 302
   ```
 
 - Deleting server from monitoring list
   ```sh
-  $ monitor manage:delete http1
+  $ sam manage:delete http1
   ```
 
 - Print all servers configured for monitoring
   ```sh
-  $ monitor manage
+  $ sam manage
   ```
 
 # Reporters
@@ -160,7 +158,7 @@ EmailReporter sends you an email when one of services fails.
 It is configurable by
 
 ```sh
-$ monitor report:config email
+$ sam report:config email
 ```
 
 ## NotifyReporter
@@ -171,7 +169,7 @@ SAM supports logging of check results.
 
 To configure this feature call
 ```sh
-$ monitor report:config log
+$ sam report:config log
 ```
 
 Logger stores information about availability every hour for every server. If any check during a hour fails, the whole hour will be marked as failed. Log file is very lite-weight! It needs only 5 bytes to store information about check results of 1 server per day.
@@ -184,7 +182,7 @@ In full form it shows check results for given day, month, year and all time summ
 
 
 ```sh
-$ monitor log docker-cms
+$ sam log docker-cms
 +------------+----------+
 | All log    | 2017     |
 +------------+----------+
@@ -228,7 +226,7 @@ By default it shows log for current date. You can change it with `--day=`, `--mo
 
 
 ```sh
-$ monitor log -s docker-cms
+$ sam log -s docker-cms
 +-------------------+--------------------+
 | docker-cms        | Log for 2017-06-19 |
 +-------------------+--------------------+
@@ -269,12 +267,12 @@ Also, you can change following settings:
 - **emailPeriod** - minimum time until SAM send you next email report after the first one.
 
 ```sh
-$ monitor report:config SETTING
+$ sam report:config SETTING
 ```
 
 # Monitor output
 
-You can configure what `monitor` command should output to terminal. By default, it outputs something only if one of servers is unavailable.
+You can configure what `sam` command should output to terminal. By default, it outputs something only if one of servers is unavailable.
 
 If you want, you can make SAM output more information:
 
