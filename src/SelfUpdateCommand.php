@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
+use Phar;
 
 /**
  * @since 0.0.8
@@ -32,7 +33,7 @@ class SelfUpdateCommand extends Command {
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
-		if (basename(dirname(__DIR__)) != 'sam.phar') {
+		if ((boolean)Phar::running() === false) {
 			$output->writeln('<comment>Run this command only from phar-file</comment>');
 			return false;
 		}
