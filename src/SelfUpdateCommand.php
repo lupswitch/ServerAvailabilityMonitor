@@ -69,7 +69,7 @@ class SelfUpdateCommand extends Command {
 				if ($updater->hasUpdate()) {
 					$new = $updater->getNewVersion();
 					$output->writeln('<comment>Version available: '.$new.'</comment>');
-					if (version_compare($new, $current_version) >= 0) {
+					if (version_compare($new, strpos($current_version, '-') !== false ? strstr($current_version, '-', true) : $current_version) >= 0) {
 						$result = $updater->update();
 						if ($result) {
 							$new_real = trim(file_get_contents(__DIR__.'/../bin/version.txt'));
