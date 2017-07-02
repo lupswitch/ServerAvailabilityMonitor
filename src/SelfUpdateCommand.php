@@ -73,7 +73,7 @@ class SelfUpdateCommand extends Command {
 						$result = $updater->update();
 						if ($result) {
 							$new_real = trim(file_get_contents(__DIR__.'/../bin/version.txt'));
-							$output->writeln('<info>Updated to '.$new_real.' version. To rollback to '.$old.' invoke with --rollback option.</info>');
+							$output->writeln('<info>Updated to '.$new_real.' version. To rollback to '.$current_version.' invoke with --rollback option.</info>');
 						} else {
 							$output->writeln('<error>Errored</error>');
 						}
