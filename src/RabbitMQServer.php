@@ -33,11 +33,11 @@ class RabbitMQServer extends BaseServer {
 	}
 
 	protected function checkAmqpLib($timeOut) {
-		$rabbitmq = new AMQPStreamConnection($this->hostname, $this->port, $this->username, $this->password,
-			// default values
-			'/', false, 'AMQPLAIN', null, 'en_US',
-			$timeOut);
 		try {
+			$rabbitmq = new AMQPStreamConnection($this->hostname, $this->port, $this->username, $this->password,
+				// default values
+				'/', false, 'AMQPLAIN', null, 'en_US',
+				$timeOut);
 			return $rabbitmq->isConnected() === true ? true : new \RuntimeException('RabbitMQ server is not available');
 		} catch (\Exception $e) {
 			return $e;
