@@ -239,25 +239,25 @@ $ sam log -s docker-cms
 **For all servers hostname/ip and port are required parameters.**
 
 ## Http
-For http server it can check result code of result. Typically it should be 200 (for most cases) or 302 / 301 (for redirecting pages).
+For http server it can check **result code** of result. Typically it should be 200 (for most cases) or 302 / 301 (for redirecting pages).
 
 ## MySQL
-For mysql server you should provide username/password for any user of DB. It will try to connect to DB.
+For mysql server you should provide **username/password** for any user of DB. It will try to connect to DB.
 
 ## PostgreSQL
-For pgsql server you should provide username/password for any user of DB. Also you can specify different name for a database from a username name. It will try to connect to this DB.
+For pgsql server you should provide **username/password** for any user of DB. Also you can specify different name for a **database** than a username name. It will try to connect to this DB.
 
 ## Memcache
-For memcache server there are not additional parameters.
+For memcache server there are no additional parameters.
 
 ## Redis
-For redis server there are not additional parameters.
+For redis server there are no additional parameters.
 
 ## Gearman
-For gearman server there are not additional parameters.
+For gearman server there are no additional parameters.
 
 ## RabbitMQ
-For rabbitmq server you should provide username/password for any user of service.
+For rabbitmq server you should provide **username/password** for any user of service.
 
 # Advanced settings
 
