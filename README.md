@@ -18,7 +18,7 @@ SAM is intented to monitor all of your services to be sure that they are working
 # Before usage
 
 ## Installation a phar
-The simpliet way to install SAM is just download a phar from [releases page](https://github.com/wapmorgan/ServerAvailabilityMonitor/releases), make it executable and put it in one of folders listed in your $PATH:
+The simpliest way to install SAM is just download a phar from [releases page](https://github.com/wapmorgan/ServerAvailabilityMonitor/releases), make it executable and put it in one of folders listed in your $PATH:
 
 ```sh
 chmod +x sam.phar
