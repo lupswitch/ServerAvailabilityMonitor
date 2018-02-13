@@ -1,7 +1,7 @@
 # Server Availability Monitor
 SAM is intented to monitor all of your services to be sure that they are working. It's a command line tool that checks servers all the time.
 
-[![Composer package](http://xn--e1adiijbgl.xn--p1acf/badge/wapmorgan/server-availability-monitor)](https://packagist.org/packages/wapmorgan/server-availability-monitor)
+[![Composer package](http://composer.network/badge/wapmorgan/server-availability-monitor)](https://packagist.org/packages/wapmorgan/server-availability-monitor)
 [![Total Downloads](https://poser.pugx.org/wapmorgan/server-availability-monitor/downloads)](https://packagist.org/packages/wapmorgan/server-availability-monitor)
 [![License](https://poser.pugx.org/wapmorgan/server-availability-monitor/license)](https://packagist.org/packages/wapmorgan/server-availability-monitor)
 
