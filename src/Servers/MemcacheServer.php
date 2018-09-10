@@ -1,10 +1,14 @@
 <?php
-namespace wapmorgan\ServerAvailabilityMonitor;
+namespace wapmorgan\ServerAvailabilityMonitor\Servers;
 
 class MemcacheServer extends BaseServer {
 	const DEFAULT_PORT = '11211';
 
-	public function checkAvailability($timeOut) {
+    /**
+     * @param $timeOut
+     * @return bool|\RuntimeException
+     */
+    public function checkAvailability($timeOut) {
 		if (class_exists('\Memcache')) {
 			$memcache = new \Memcache();
 			if (@$memcache->connect($this->hostname, $this->port, $timeOut) === false) return new \RuntimeException('Memcache server is not available');
@@ -20,7 +24,10 @@ class MemcacheServer extends BaseServer {
 		return new \RuntimeException('No available memcache connectors found.');
 	}
 
-	public function getServerHash() {
+    /**
+     * @return string
+     */
+    public function getServerHash() {
 		return md5($this->hostname.':'.$this->port);
 	}
 }

@@ -26,7 +26,11 @@ class Configuration implements ArrayAccess {
 
 	protected $config;
 
-	public function __construct($config) {
+    /**
+     * Configuration constructor.
+     * @param $config
+     */
+    public function __construct($config) {
 		if (file_exists($config)) {
 			$all_config = json_decode(file_get_contents($config), true);
 			$this->config = isset($all_config['configuration']) ? static::updateConfiguration($all_config['configuration']) : static::getDefaultConfig();

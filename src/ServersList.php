@@ -2,6 +2,13 @@
 namespace wapmorgan\ServerAvailabilityMonitor;
 
 use ArrayAccess;
+use wapmorgan\ServerAvailabilityMonitor\Servers\GearmanServer;
+use wapmorgan\ServerAvailabilityMonitor\Servers\HttpServer;
+use wapmorgan\ServerAvailabilityMonitor\Servers\MemcacheServer;
+use wapmorgan\ServerAvailabilityMonitor\Servers\MysqlServer;
+use wapmorgan\ServerAvailabilityMonitor\Servers\PostgreSqlServer;
+use wapmorgan\ServerAvailabilityMonitor\Servers\RabbitMQServer;
+use wapmorgan\ServerAvailabilityMonitor\Servers\RedisServer;
 
 class ServersList implements ArrayAccess {
 
@@ -18,7 +25,11 @@ class ServersList implements ArrayAccess {
 	protected $serversConfig;
 	protected $servers;
 
-	public function __construct($config) {
+    /**
+     * ServersList constructor.
+     * @param $config
+     */
+    public function __construct($config) {
 		if (file_exists($config)) {
 			$all_config = json_decode(file_get_contents($config), true);
 			$this->serversConfig = isset($all_config['servers']) ? $all_config['servers'] : [];
@@ -27,7 +38,11 @@ class ServersList implements ArrayAccess {
 			$this->serversConfig = [];
 	}
 
-	public function save($config) {
+    /**
+     * @param $config
+     * @return bool
+     */
+    public function save($config) {
 		if (file_exists($config)) {
 			$all_config = json_decode(file_get_contents($config), true);
 			$all_config['servers'] = $this->serversConfig;
@@ -37,7 +52,10 @@ class ServersList implements ArrayAccess {
 		return file_put_contents($config, json_encode($all_config)) !== false;
 	}
 
-	public function initializeServers() {
+    /**
+     *
+     */
+    public function initializeServers() {
 		foreach ($this->serversConfig as $server_name => $server_config) {
 			$this->servers[$server_name] = static::getServerByType($server_config['type']);
 			foreach ($server_config as $config_param => $param_value) {
@@ -46,15 +64,26 @@ class ServersList implements ArrayAccess {
 		}
 	}
 
-	public function getServerNames() {
+    /**
+     * @return array
+     */
+    public function getServerNames() {
 		return array_keys($this->serversConfig);
 	}
 
-	public function getServer($name) {
+    /**
+     * @param $name
+     * @return bool
+     */
+    public function getServer($name) {
 		return isset($this->servers[$name]) ? $this->servers[$name] : false;
 	}
 
-	public function getNextTypeId($type) {
+    /**
+     * @param $type
+     * @return int
+     */
+    public function getNextTypeId($type) {
 		$id = 1;
 		while (isset($this->serversConfig[$type.$id])) {
 			$id++;
@@ -62,23 +91,42 @@ class ServersList implements ArrayAccess {
 		return $id;
 	}
 
-	public function offsetExists($offset) {
+    /**
+     * @param mixed $offset
+     * @return bool
+     */
+    public function offsetExists($offset) {
 		return isset($this->serversConfig[$offset]);
 	}
 
-	public function offsetGet($offset) {
+    /**
+     * @param mixed $offset
+     * @return bool|mixed
+     */
+    public function offsetGet($offset) {
 		return isset($this->serversConfig[$offset]) ? $this->serversConfig[$offset] : false;
 	}
 
-	public function offsetSet($offset, $value) {
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
+    public function offsetSet($offset, $value) {
 		$this->serversConfig[$offset] = $value;
 	}
 
-	public function offsetUnset($offset) {
+    /**
+     * @param mixed $offset
+     */
+    public function offsetUnset($offset) {
 		if (isset($this->serversConfig[$offset])) unset($this->serversConfig[$offset]);
 	}
 
-	static public function getServerByType($type) {
+    /**
+     * @param $type
+     * @return GearmanServer|HttpServer|MemcacheServer|MysqlServer|PostgreSqlServer|RabbitMQServer|RedisServer
+     */
+    static public function getServerByType($type) {
 		switch ($type) {
 			case 'http':
 				return new HttpServer();
@@ -97,7 +145,10 @@ class ServersList implements ArrayAccess {
 		}
 	}
 
-	static public function getDefaultConfigLocation() {
+    /**
+     * @return string
+     */
+    static public function getDefaultConfigLocation() {
 		if (strncasecmp(PHP_OS, 'win', 3) === 0) {
 			if (isset($_SERVER['USERPROFILE']))
 				return $_SERVER['USERPROFILE'].'\\.monitor.json';

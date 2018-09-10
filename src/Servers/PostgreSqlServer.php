@@ -1,5 +1,8 @@
 <?php
-namespace wapmorgan\ServerAvailabilityMonitor;
+namespace wapmorgan\ServerAvailabilityMonitor\Servers;
+
+use PDO;
+use PDOException;
 
 class PostgreSqlServer extends BaseServer {
 	const DEFAULT_PORT = '5432';
@@ -30,33 +33,51 @@ class PostgreSqlServer extends BaseServer {
 		];
 	}
 
-	public function checkAvailability($timeOut) {
+    /**
+     * @param $timeOut
+     * @return bool|\RuntimeException
+     */
+    public function checkAvailability($timeOut) {
 		if (extension_loaded('pdo')) {
 			return $this->checkPdo($timeOut);
-		} else if (extension_loaded('pgsql')) {
-			return $this->checkPgsql($timeOut);
 		}
-		return new \RuntimeException('No available pgsql connectors found.');
+
+        if (extension_loaded('pgsql')) {
+            return $this->checkPgsql($timeOut);
+        }
+
+        return new \RuntimeException('No available pgsql connectors found.');
 	}
 
-	protected function checkPdo($timeOut) {
+    /**
+     * @param $timeOut
+     * @return bool|\RuntimeException
+     */
+    protected function checkPdo($timeOut) {
 		try {
-			$pdo = new \PDO('pgsql:host='.$this->hostname.';port='.$this->port.';user='.$this->username.';password='.$this->password.(!empty($this->database) ? ';dbname='.$this->database : null), null, null, [
-				\PDO::ATTR_TIMEOUT => $timeOut,
+			$pdo = new PDO('pgsql:host='.$this->hostname.';port='.$this->port.';user='.$this->username.';password='.$this->password.(!empty($this->database) ? ';dbname='.$this->database : null), null, null, [
+				PDO::ATTR_TIMEOUT => $timeOut,
 			]);
-		} catch (\PDOException $e) {
+		} catch (PDOException $e) {
 			return new \RuntimeException($e->getMessage(), $e->getCode(), $e);
 		}
 		return true;
 	}
 
-	protected function checkPgsql($timeOut) {
+    /**
+     * @param $timeOut
+     * @return bool|\RuntimeException
+     */
+    protected function checkPgsql($timeOut) {
 		$result = pg_connect('host='.$this->hostname.' port='.$this->port.' user='.$this->username.' password='.$this->password.(!empty($this->database) ? ' dbname='.$this->database : null).' connect_timeout='.$timeOut);
 		if ($result === false) return new \RuntimeException('PostgreSql server is not available');
 		return true;
 	}
 
-	public function getServerHash() {
+    /**
+     * @return string
+     */
+    public function getServerHash() {
 		return md5($this->hostname.':'.$this->port.'@'.$this->username.':'.$this->password);
 	}
 }

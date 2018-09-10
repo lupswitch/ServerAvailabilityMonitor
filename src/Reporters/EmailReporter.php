@@ -1,17 +1,26 @@
 <?php
-namespace wapmorgan\ServerAvailabilityMonitor;
+namespace wapmorgan\ServerAvailabilityMonitor\Reporters;
 
 use PHPMailer;
+use wapmorgan\ServerAvailabilityMonitor\Configuration;
 
 class EmailReporter {
 	protected $configuration;
 	protected $lastReportTime;
 
-	public function __construct(Configuration $configuration) {
+    /**
+     * EmailReporter constructor.
+     * @param Configuration $configuration
+     */
+    public function __construct(Configuration $configuration) {
 		$this->configuration = $configuration;
 	}
 
-	public function testConfiguration() {
+    /**
+     * @return bool
+     * @throws \phpmailerException
+     */
+    public function testConfiguration() {
 		$mailer = $this->initializeMailer();
 		$mailer->SMTPDebug = 3;
 		$mailer->Subject = 'Server Availability Monitor test message';
@@ -22,7 +31,13 @@ class EmailReporter {
 		return true;
 	}
 
-	public function sendReport(array $failedServices, $checkTime) {
+    /**
+     * @param array $failedServices
+     * @param $checkTime
+     * @return bool
+     * @throws \phpmailerException
+     */
+    public function sendReport(array $failedServices, $checkTime) {
 		if ($this->lastReportTime !== false) {
 			// don't send new messages for next `emailPeriod` seconds after previous message
 			if ((time() - $this->lastReportTime) < $this->configuration['emailPeriod']) {
@@ -44,7 +59,11 @@ class EmailReporter {
 		return true;
 	}
 
-	protected function initializeMailer() {
+    /**
+     * @return PHPMailer
+     * @throws \phpmailerException
+     */
+    protected function initializeMailer() {
 		$email = $this->configuration['email'];
 
 		$mail = new PHPMailer();

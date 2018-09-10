@@ -1,5 +1,5 @@
 <?php
-namespace wapmorgan\ServerAvailabilityMonitor;
+namespace wapmorgan\ServerAvailabilityMonitor\Servers;
 
 class HttpServer extends BaseServer {
 	const DEFAULT_PORT = '80';
@@ -19,7 +19,11 @@ class HttpServer extends BaseServer {
 		];
 	}
 
-	public function checkAvailability($timeOut) {
+    /**
+     * @param $timeOut
+     * @return bool|\RuntimeException
+     */
+    public function checkAvailability($timeOut) {
 		if (extension_loaded('curl')) {
 			return $this->checkCurl($timeOut);
 		} else {
@@ -27,7 +31,11 @@ class HttpServer extends BaseServer {
 		}
 	}
 
-	protected function checkCurl($timeOut) {
+    /**
+     * @param $timeOut
+     * @return bool|\RuntimeException
+     */
+    protected function checkCurl($timeOut) {
 		$curlInit = curl_init('http://'.$this->hostname.':'.$this->port);
 		curl_setopt_array($curlInit, [
 			CURLOPT_CONNECTTIMEOUT => $timeOut,
@@ -46,7 +54,11 @@ class HttpServer extends BaseServer {
 		return true;
 	}
 
-	protected function checkInternal($timeOut) {
+    /**
+     * @param $timeOut
+     * @return bool|\RuntimeException
+     */
+    protected function checkInternal($timeOut) {
 		$defaults = stream_context_set_default(
 			[
 				'http' => [
@@ -68,7 +80,10 @@ class HttpServer extends BaseServer {
 		return true;
 	}
 
-	public function getServerHash() {
+    /**
+     * @return string
+     */
+    public function getServerHash() {
 		return md5($this->hostname.':'.$this->port);
 	}
 }

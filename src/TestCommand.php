@@ -8,30 +8,28 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
+use wapmorgan\ServerAvailabilityMonitor\Reporters\EmailReporter;
 
 class TestCommand extends Command {
 
 	protected function configure() {
 		$this
-		// the name of the command (the part after "bin/console")
 		->setName('test')
-
 		->setHidden(true)
-
-		// the short description shown while running "php bin/console list"
 		->setDescription('Test different functionality.')
-
-		// the full command description shown when running the command with
-		// the "--help" option
 		->setHelp('This command allows you to test different functions.')
-
 		->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The location of config-file', ServersList::getDefaultConfigLocation())
-
 		->addArgument('test', InputArgument::REQUIRED, 'Function for test')
 	;
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output) {
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return bool|int|null
+     * @throws \phpmailerException
+     */
+    protected function execute(InputInterface $input, OutputInterface $output) {
 		$config_file = $input->getOption('config') ?: ServersList::getDefaultConfigLocation();
 		$configuration = new Configuration($config_file);
 		$servers_list = new ServersList($config_file);

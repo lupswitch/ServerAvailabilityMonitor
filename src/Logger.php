@@ -20,7 +20,10 @@ class Logger {
 		}
 	}
 
-	protected function setupLogger() {
+    /**
+     *
+     */
+    protected function setupLogger() {
 		// 36 byte server header
 		$this->log->saveGroup('server', [
 			's:hash' => 32,
@@ -212,7 +215,14 @@ class Logger {
 		unset($this->log);
 	}
 
-	public function extractServerLog($serverHash, $year = null, $month = null, $day = null) {
+    /**
+     * @param $serverHash
+     * @param null $year
+     * @param null $month
+     * @param null $day
+     * @return array|bool|mixed
+     */
+    public function extractServerLog($serverHash, $year = null, $month = null, $day = null) {
 		if (!isset($this->logServers[$serverHash]))
 			return false;
 
@@ -249,7 +259,11 @@ class Logger {
 			return $checks;
 	}
 
-	public function extractHoursResults($resultsRaw) {
+    /**
+     * @param $resultsRaw
+     * @return array
+     */
+    public function extractHoursResults($resultsRaw) {
 		$results = [];
 		for ($i = 0; $i < 24; $i++)
 			$results[$i] = !(boolean)(($resultsRaw >> (23 - $i)) & 1);

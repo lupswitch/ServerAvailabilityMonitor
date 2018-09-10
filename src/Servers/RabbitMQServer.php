@@ -1,5 +1,5 @@
 <?php
-namespace wapmorgan\ServerAvailabilityMonitor;
+namespace wapmorgan\ServerAvailabilityMonitor\Servers;
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 

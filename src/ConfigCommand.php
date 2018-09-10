@@ -13,28 +13,25 @@ class ConfigCommand extends Command {
 
 	protected function configure() {
 		$this
-		// the name of the command (the part after "bin/console")
 		->setName('report:config')
-
-		// the short description shown while running "php bin/console list"
 		->setDescription('Config the report rules.')
-
-		// the full command description shown when running the command with
-		// the "--help" option
 		->setHelp('This command allows you to update configuration of report system. You should pass a param to configure. Possible values:'.PHP_EOL.
 '- email - An email to send reports when one of services fails
 - emailPeriod - Time until sending new email when services are still not working.
 - checkPeriod - Time between checks of service availability.
 - checkTimeOut - Time out for connection to services.
 - log - Option to enable or disable logging.')
-
 		->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The location of config-file', ServersList::getDefaultConfigLocation())
-
 		->addArgument('param', InputArgument::REQUIRED, 'Parameter to configure.')
 	;
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output) {
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return bool|int|null
+     */
+    protected function execute(InputInterface $input, OutputInterface $output) {
 		$config_file = $input->getOption('config') ?: ServersList::getDefaultConfigLocation();
 		$configuration = new Configuration($config_file);
 

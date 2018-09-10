@@ -1,5 +1,9 @@
 <?php
-namespace wapmorgan\ServerAvailabilityMonitor;
+namespace wapmorgan\ServerAvailabilityMonitor\Servers;
+
+use mysqli;
+use PDO;
+use PDOException;
 
 class MysqlServer extends BaseServer {
 	const DEFAULT_PORT = '3306';
@@ -23,28 +27,43 @@ class MysqlServer extends BaseServer {
 		];
 	}
 
-	public function checkAvailability($timeOut) {
+    /**
+     * @param $timeOut
+     * @return bool|\RuntimeException
+     */
+    public function checkAvailability($timeOut) {
 		if (extension_loaded('pdo')) {
 			return $this->checkPdo($timeOut);
-		} else if (extension_loaded('mysqli')) {
-			return $this->checkMysqli($timeOut);
 		}
-		return new \RuntimeException('No available mysql connectors found.');
+
+        if (extension_loaded('mysqli')) {
+            return $this->checkMysqli($timeOut);
+        }
+
+        return new \RuntimeException('No available mysql connectors found.');
 	}
 
-	protected function checkPdo($timeOut) {
+    /**
+     * @param $timeOut
+     * @return bool|\RuntimeException
+     */
+    protected function checkPdo($timeOut) {
 		try {
-			$pdo = new \PDO('mysql:host='.$this->hostname.';port='.$this->port, $this->username, $this->password, [
-				\PDO::ATTR_TIMEOUT => $timeOut,
+			$pdo = new PDO('mysql:host='.$this->hostname.';port='.$this->port, $this->username, $this->password, [
+				PDO::ATTR_TIMEOUT => $timeOut,
 			]);
-		} catch (\PDOException $e) {
+		} catch (PDOException $e) {
 			return new \RuntimeException($e->getMessage(), $e->getCode(), $e);
 		}
 		return true;
 	}
 
-	protected function checkMysqli($timeOut) {
-		$mysqli = new \mysqli($this->hostname, $this->username, $this->password, null, $this->port);
+    /**
+     * @param $timeOut
+     * @return bool|\RuntimeException
+     */
+    protected function checkMysqli($timeOut) {
+		$mysqli = new mysqli($this->hostname, $this->username, $this->password, null, $this->port);
 		$mysqli->options(MYSQLI_OPT_CONNECT_TIMEOUT, $timeOut);
 		if ($mysqli->connect_error) {
 			return new \RuntimeException($mysqli->connect_error, $mysqli->connect_errno);
@@ -52,7 +71,10 @@ class MysqlServer extends BaseServer {
 		return true;
 	}
 
-	public function getServerHash() {
+    /**
+     * @return string
+     */
+    public function getServerHash() {
 		return md5($this->hostname.':'.$this->port.'@'.$this->username.':'.$this->password);
 	}
 }

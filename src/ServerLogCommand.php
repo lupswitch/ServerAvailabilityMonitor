@@ -16,33 +16,28 @@ class ServerLogCommand extends Command {
 
 	protected function configure() {
 		$this
-		// the name of the command (the part after "bin/console")
 		->setName('log')
-
-		// the short description shown while running "php bin/console list"
 		->setDescription('Log viewer of specific server.')
-
-		// the full command description shown when running the command with
-		// the "--help" option
 		->setHelp('This command allows you to view log of check results of a server.')
-
 		->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The location of config-file', ServersList::getDefaultConfigLocation())
 		->addOption('log', 'l', InputOption::VALUE_REQUIRED, 'The location of log-file', Logger::getDefaultLogLocation())
-
 		->addOption('short', 's', InputOption::VALUE_NONE, 'Show results in short form')
-
 		->addOption('all-years', 'Y', InputOption::VALUE_NONE, 'Show results for all years')
 		->addOption('year', 'y', InputOption::VALUE_OPTIONAL, 'The year of log to view', date('Y'))
 		->addOption('all-months', 'M', InputOption::VALUE_NONE, 'Show results for all months in the year')
 		->addOption('month', 'm', InputOption::VALUE_OPTIONAL, 'The month of log to view', date('m'))
 		->addOption('all-days', 'D', InputOption::VALUE_NONE, 'Show results for all days in the month')
 		->addOption('day', 'd', InputOption::VALUE_OPTIONAL, 'The day of log to view', date('d'))
-
 		->addArgument('server', InputArgument::OPTIONAL, 'Name of the server')
 	;
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output) {
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return bool|int|null
+     */
+    protected function execute(InputInterface $input, OutputInterface $output) {
 		$config_file = $input->getOption('config') ?: ServersList::getDefaultConfigLocation();
 		$servers_list = new ServersList($config_file);
 		$logger = new Logger($input->getOption('log'));
@@ -126,7 +121,14 @@ class ServerLogCommand extends Command {
 		}
 	}
 
-	protected function renderLogTable($isShortForm, Table $table, $title, $server, $check_results) {
+    /**
+     * @param $isShortForm
+     * @param Table $table
+     * @param $title
+     * @param $server
+     * @param $check_results
+     */
+    protected function renderLogTable($isShortForm, Table $table, $title, $server, $check_results) {
 		if ($isShortForm) {
 			$headers = ([$server, $title]);
 
@@ -161,7 +163,12 @@ class ServerLogCommand extends Command {
 		}
 	}
 
-	protected function renderTable(Table $table, array $headers, array $rows) {
+    /**
+     * @param Table $table
+     * @param array $headers
+     * @param array $rows
+     */
+    protected function renderTable(Table $table, array $headers, array $rows) {
 		$table->setHeaders($headers);
 		$table->setRows($rows);
 		$table->render();

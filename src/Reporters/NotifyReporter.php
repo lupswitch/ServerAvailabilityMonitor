@@ -1,5 +1,5 @@
 <?php
-namespace wapmorgan\ServerAvailabilityMonitor;
+namespace wapmorgan\ServerAvailabilityMonitor\Reporters;
 
 class NotifyReporter {
     const COMMAND = 'notify-send';
@@ -13,6 +13,10 @@ class NotifyReporter {
     static public $expireTime = false;
 
     static protected $notifyPath;
+
+    /**
+     * @return bool
+     */
     static public function checkAvailability() {
         if (strncasecmp(PHP_OS, 'win', 3) === 0)
             return false;
@@ -20,6 +24,12 @@ class NotifyReporter {
         return $returnCode === 0;
     }
 
+    /**
+     * @param array $failedServices
+     * @param $checkTime
+     * @param bool $debug
+     * @return bool
+     */
     public function sendReport(array $failedServices, $checkTime, $debug = false) {
         $expire_time = static::$expireTime ?: static::DEFAULT_EXPIRE_TIME;
         exec(static::COMMAND.' --icon='.static::ICON.' --expire-time='.$expire_time.' --urgency='.static::URGENCY_LEVEL.' "Failed Services" "These sevice failed during check at '.date('r', $checkTime).':'.PHP_EOL.'- '.implode(PHP_EOL.'- ', array_keys($failedServices)).'"', $output, $resultCode);

@@ -18,21 +18,19 @@ class SelfUpdateCommand extends Command {
 
 	protected function configure() {
 		$this
-		// the name of the command (the part after "bin/console")
 		->setName('self-update')
-
-		// the short description shown while running "php bin/console list"
 		->setDescription('Update sam to newer version.')
-
-		// the full command description shown when running the command with
-		// the "--help" option
 		->setHelp('This command allows you to update sam to newer version of fall back to previous one.')
-
 		->addOption('rollback', 'r', InputOption::VALUE_NONE, 'Rollback to previous version')
 	;
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output) {
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return bool|int|null
+     */
+    protected function execute(InputInterface $input, OutputInterface $output) {
 		if ((boolean)Phar::running() === false) {
 			$output->writeln('<comment>Run this command only from phar-file</comment>');
 			return false;

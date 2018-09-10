@@ -13,18 +13,10 @@ class AddCommand extends Command {
 
 	protected function configure() {
 		$this
-		// the name of the command (the part after "bin/console")
 		->setName('manage:add')
-
-		// the short description shown while running "php bin/console list"
 		->setDescription('Adds server to monitoring list.')
-
-		// the full command description shown when running the command with
-		// the "--help" option
 		->setHelp('This command allows you to add servers for monitoring.')
-
 		->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The location of config-file', ServersList::getDefaultConfigLocation())
-
 		->addArgument('type', InputArgument::OPTIONAL, 'Type of the server')
 	;
 	}

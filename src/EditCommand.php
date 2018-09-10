@@ -13,18 +13,10 @@ class EditCommand extends Command {
 
 	protected function configure() {
 		$this
-		// the name of the command (the part after "bin/console")
 		->setName('manage:edit')
-
-		// the short description shown while running "php bin/console list"
 		->setDescription('Edit server.')
-
-		// the full command description shown when running the command with
-		// the "--help" option
 		->setHelp('This command allows you to update configuration of server.')
-
 		->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The location of config-file', ServersList::getDefaultConfigLocation())
-
 		->addArgument('name', InputArgument::OPTIONAL, 'Name of the server')
 		->addArgument('property', InputArgument::OPTIONAL, 'Property of server')
 		->addArgument('value', InputArgument::OPTIONAL, 'New value of property')
